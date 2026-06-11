@@ -1,5 +1,63 @@
-<!-- pages/stock/edit/edit.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">📝</view>
-  <view class="empty__hint">编辑库存 · 建设中（Phase D）</view>
+<!-- pages/stock/edit/edit.wxml — 新增/编辑库存 -->
+<view class="page">
+  <!-- 食材 -->
+  <view class="field">
+    <text class="field__label">食材</text>
+    <view class="field__row">
+      <picker mode="selector" range="{{ingredientNames}}" value="{{ingredientIndex}}" bindchange="onPickIngredient">
+        <view class="picker-value">{{ingredientIndex >= 0 ? ingredientNames[ingredientIndex] : '请选择食材'}} ▾</view>
+      </picker>
+      <text class="tlink" bindtap="onNewIngredient">＋ 新建食材</text>
+    </view>
+  </view>
+
+  <!-- 数量 + 单位 -->
+  <view class="field field--row2">
+    <view class="col">
+      <text class="field__label">数量</text>
+      <input class="field__input" type="digit" placeholder="0" value="{{qty}}" bindinput="onQtyInput" />
+    </view>
+    <view class="col">
+      <text class="field__label">单位</text>
+      <input class="field__input" placeholder="个 / g / 把…" value="{{unit}}" bindinput="onUnitInput" />
+    </view>
+  </view>
+
+  <!-- 位置 -->
+  <view class="field">
+    <text class="field__label">存放位置</text>
+    <view class="field__row">
+      <picker mode="selector" range="{{locations}}" value="{{locationIndex}}" bindchange="onLocationChange">
+        <view class="picker-value">{{locations[locationIndex] || '请选择'}} ▾</view>
+      </picker>
+      <text class="tlink" bindtap="onAddLocation">＋ 新增位置</text>
+    </view>
+  </view>
+
+  <!-- 保质期 -->
+  <view class="field">
+    <text class="field__label">保质期（可选）</text>
+    <view class="field__row">
+      <picker mode="date" value="{{expiry}}" bindchange="onExpiryChange">
+        <view class="picker-value">{{expiry || '点击选择到期日'}} ▾</view>
+      </picker>
+      <text wx:if="{{expiry}}" class="tlink tlink--danger" bindtap="onClearExpiry">清除</text>
+    </view>
+  </view>
+
+  <!-- 状态多选 -->
+  <view class="field">
+    <text class="field__label">状态（可多选）</text>
+    <view class="status-wrap">
+      <text
+        wx:for="{{allStatuses}}"
+        wx:key="*this"
+        class="chip status-chip {{selectedStatuses.indexOf(item) >= 0 ? 'status-chip--on' : ''}}"
+        data-status="{{item}}"
+        bindtap="onToggleStatus"
+      >{{item}}</text>
+    </view>
+  </view>
+
+  <button class="save-btn" bindtap="onSave">保存</button>
 </view>

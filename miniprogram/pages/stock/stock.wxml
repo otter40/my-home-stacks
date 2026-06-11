@@ -1,5 +1,50 @@
-<!-- pages/stock/stock.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">🧊</view>
-  <view class="empty__hint">库存 · 建设中（Phase D）</view>
+<!-- pages/stock/stock.wxml — 库存 -->
+<view class="page">
+  <view wx:if="{{!isEmpty}}">
+    <view wx:for="{{groups}}" wx:key="location" class="group">
+      <view class="group__head" data-loc="{{item.location}}" bindtap="onToggleCollapse">
+        <text class="group__title">{{item.location}}</text>
+        <text class="group__count">{{item.items.length}}</text>
+        <text class="group__arrow">{{item.collapsed ? '▸' : '▾'}}</text>
+      </view>
+
+      <view wx:if="{{!item.collapsed}}">
+        <view wx:for="{{item.items}}" wx:for-item="it" wx:key="id" class="card inv">
+          <view class="inv__row">
+            <view class="inv__title">
+              <text class="inv__name">{{it.name}}</text>
+              <text wx:if="{{it.expiryLabel}}" class="chip chip--{{it.expiryStatus === 'expired' ? 'red' : 'yellow'}}">{{it.expiryLabel}}</text>
+            </view>
+            <view class="inv__qty">
+              <view class="step" data-id="{{it.id}}" catchtap="onDec">－</view>
+              <text class="step__num">{{it.qty}}</text>
+              <view class="step step--plus" data-id="{{it.id}}" catchtap="onInc">＋</view>
+              <text class="inv__unit">{{it.unit}}</text>
+            </view>
+          </view>
+
+          <view wx:if="{{it.statuses.length > 0}}" class="inv__statuses">
+            <text wx:for="{{it.statuses}}" wx:for-item="s" wx:key="*this" class="chip">{{s}}</text>
+          </view>
+
+          <view class="inv__foot">
+            <view class="needbuy {{it.needBuy ? 'needbuy--on' : ''}}" data-id="{{it.id}}" bindtap="onToggleNeedBuy">
+              {{it.needBuy ? '✓ 需要购买' : '需要购买'}}
+            </view>
+            <view class="inv__actions">
+              <text class="tlink" data-id="{{it.id}}" bindtap="onEdit">编辑</text>
+              <text class="tlink tlink--danger" data-id="{{it.id}}" bindtap="onDelete">删除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <view class="empty__emoji">🧊</view>
+    <view class="empty__hint">库存空空如也，点右下角 + 添加吧</view>
+  </view>
+
+  <view class="fab" bindtap="onAdd">＋</view>
 </view>
