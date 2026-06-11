@@ -1,5 +1,76 @@
-<!-- pages/recipes/edit/edit.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">📝</view>
-  <view class="empty__hint">编辑菜谱 · 建设中（Phase E）</view>
+<!-- pages/recipes/edit/edit.wxml — 新增/编辑菜谱 -->
+<view class="page">
+  <!-- 菜名 -->
+  <view class="field">
+    <text class="field__label">菜名</text>
+    <input class="field__input" placeholder="必填，如 番茄炒蛋" value="{{name}}" bindinput="onNameInput" />
+  </view>
+
+  <!-- 类型多选 -->
+  <view class="field">
+    <view class="field__head">
+      <text class="field__label">类型（可多选）</text>
+      <text class="tlink" bindtap="onAddType">＋ 新增</text>
+    </view>
+    <view class="chip-wrap">
+      <text
+        wx:for="{{typeOptions}}"
+        wx:key="name"
+        class="chip sel-chip {{item.on ? 'sel-chip--on' : ''}}"
+        data-name="{{item.name}}"
+        bindtap="onToggleType"
+      >{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 菜系多选 -->
+  <view class="field">
+    <view class="field__head">
+      <text class="field__label">菜系（可多选）</text>
+      <text class="tlink" bindtap="onAddCuisine">＋ 新增</text>
+    </view>
+    <view class="chip-wrap">
+      <text
+        wx:for="{{cuisineOptions}}"
+        wx:key="name"
+        class="chip sel-chip {{item.on ? 'sel-chip--on' : ''}}"
+        data-name="{{item.name}}"
+        bindtap="onToggleCuisine"
+      >{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 提前备菜 -->
+  <view class="field">
+    <text class="field__label">提前备菜</text>
+    <picker mode="selector" range="{{prepOptions}}" value="{{prepIndex}}" bindchange="onPrepChange">
+      <view class="picker-value">{{prepOptions[prepIndex] || '请选择'}} ▾</view>
+    </picker>
+  </view>
+
+  <!-- 食材 -->
+  <view class="field">
+    <view class="field__head">
+      <text class="field__label">食材（主料影响冰箱建议）</text>
+      <text class="tlink" bindtap="onNewIngredient">＋ 新建食材</text>
+    </view>
+    <view wx:for="{{rows}}" wx:key="index" class="ing-row">
+      <picker class="ing-row__pick" mode="selector" range="{{ingredientNames}}" value="{{item.ingredientIndex}}" data-index="{{index}}" bindchange="onPickRowIngredient">
+        <view class="picker-value picker-value--sm">{{item.ingredientIndex >= 0 ? ingredientNames[item.ingredientIndex] : '选择食材'}} ▾</view>
+      </picker>
+      <input class="ing-row__qty" type="digit" placeholder="量" value="{{item.qty}}" data-index="{{index}}" bindinput="onRowQty" />
+      <input class="ing-row__unit" placeholder="单位" value="{{item.unit}}" data-index="{{index}}" bindinput="onRowUnit" />
+      <view class="ing-row__main {{item.main ? 'ing-row__main--on' : ''}}" data-index="{{index}}" bindtap="onToggleRowMain">{{item.main ? '主料' : '辅料'}}</view>
+      <view class="ing-row__del" data-index="{{index}}" bindtap="onRemoveRow">✕</view>
+    </view>
+    <view class="add-row" bindtap="onAddRow">＋ 添加一行食材</view>
+  </view>
+
+  <!-- 做法 -->
+  <view class="field">
+    <text class="field__label">做法（可选）</text>
+    <textarea class="field__textarea" placeholder="写下做法步骤…" value="{{steps}}" bindinput="onStepsInput" auto-height />
+  </view>
+
+  <button class="save-btn" bindtap="onSave">保存</button>
 </view>

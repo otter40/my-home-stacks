@@ -50,12 +50,12 @@
     <text class="field__label">状态（可多选）</text>
     <view class="status-wrap">
       <text
-        wx:for="{{allStatuses}}"
-        wx:key="*this"
-        class="chip status-chip {{selectedStatuses.indexOf(item) >= 0 ? 'status-chip--on' : ''}}"
-        data-status="{{item}}"
+        wx:for="{{statusOptions}}"
+        wx:key="name"
+        class="chip status-chip {{item.on ? 'status-chip--on' : ''}}"
+        data-status="{{item.name}}"
         bindtap="onToggleStatus"
-      >{{item}}</text>
+      >{{item.name}}</text>
     </view>
   </view>
 

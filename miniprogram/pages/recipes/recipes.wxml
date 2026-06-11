@@ -1,5 +1,65 @@
-<!-- pages/recipes/recipes.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">📖</view>
-  <view class="empty__hint">菜谱 · 建设中（Phase E）</view>
+<!-- pages/recipes/recipes.wxml — 菜谱 -->
+<view class="page">
+  <!-- 搜索 -->
+  <view class="searchbar">
+    <text class="searchbar__icon">🔍</text>
+    <input class="searchbar__input" placeholder="搜索菜名" value="{{keyword}}" bindinput="onSearchInput" confirm-type="search" />
+  </view>
+
+  <!-- 类型筛选 -->
+  <scroll-view class="filter" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="filter__inner">
+      <view
+        wx:for="{{typeFilters}}"
+        wx:key="*this"
+        class="filter__chip {{activeType === item ? 'filter__chip--on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onSelectType"
+      >{{item}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 菜系筛选 -->
+  <scroll-view class="filter" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="filter__inner">
+      <view
+        wx:for="{{cuisineFilters}}"
+        wx:key="*this"
+        class="filter__chip {{activeCuisine === item ? 'filter__chip--on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onSelectCuisine"
+      >{{item}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 列表 -->
+  <view wx:if="{{list.length > 0}}">
+    <view wx:for="{{list}}" wx:key="id" class="card recipe">
+      <view class="recipe__head">
+        <text class="recipe__name">{{item.name}}</text>
+        <view class="recipe__tags">
+          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
+          <text wx:for="{{item.cuisines}}" wx:for-item="c" wx:key="*this" class="chip chip--accent">{{c}}</text>
+        </view>
+      </view>
+      <view class="recipe__meta">⏱ {{item.prep}}</view>
+      <view class="recipe__main">主料：{{item.mainText}}</view>
+      <view class="recipe__foot">
+        <view class="today-toggle {{item.isToday ? 'today-toggle--on' : ''}}" data-id="{{item.id}}" bindtap="onToggleToday">
+          {{item.isToday ? '✓ 今天吃' : '加入今天吃'}}
+        </view>
+        <view class="recipe__actions">
+          <text class="tlink" data-id="{{item.id}}" bindtap="onEdit">编辑</text>
+          <text class="tlink tlink--danger" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <view class="empty__emoji">📖</view>
+    <view class="empty__hint">{{keyword || activeType !== '全部' || activeCuisine !== '全部' ? '没有符合条件的菜谱' : '还没有菜谱，点右下角 + 添加吧'}}</view>
+  </view>
+
+  <view class="fab" bindtap="onAdd">＋</view>
 </view>

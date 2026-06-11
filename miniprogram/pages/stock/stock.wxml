@@ -29,7 +29,7 @@
 
           <view class="inv__foot">
             <view class="needbuy {{it.needBuy ? 'needbuy--on' : ''}}" data-id="{{it.id}}" bindtap="onToggleNeedBuy">
-              {{it.needBuy ? '✓ 需要购买' : '需要购买'}}
+              {{it.needBuy ? '✓ 进货' : '进货'}}
             </view>
             <view class="inv__actions">
               <text class="tlink" data-id="{{it.id}}" bindtap="onEdit">编辑</text>

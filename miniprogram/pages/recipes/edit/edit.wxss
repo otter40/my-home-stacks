@@ -1,1 +1,95 @@
 /* pages/recipes/edit/edit.wxss */
+.page { min-height: 100vh; padding: 16rpx 0 60rpx; }
+
+.field {
+  background: var(--color-card);
+  border: 1rpx solid var(--color-border);
+  margin: 16rpx 24rpx;
+  padding: 24rpx;
+  border-radius: var(--radius-card);
+}
+.field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+.field__label {
+  display: block;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+.field__head .field__label { margin-bottom: 0; }
+.field__input { width: 100%; font-size: 30rpx; }
+.field__textarea { width: 100%; min-height: 120rpx; font-size: 30rpx; line-height: 1.6; }
+.picker-value { font-size: 30rpx; color: var(--color-text); }
+.picker-value--sm { font-size: 26rpx; }
+
+/* 多选 chip */
+.chip-wrap { display: flex; flex-wrap: wrap; }
+.sel-chip {
+  border: 1rpx solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  padding: 8rpx 20rpx;
+  margin: 6rpx 12rpx 6rpx 0;
+}
+.sel-chip--on {
+  background: rgba(35, 131, 226, 0.12);
+  color: var(--color-accent);
+  border-color: rgba(35, 131, 226, 0.4);
+}
+
+/* 食材行 */
+.ing-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+.ing-row__pick {
+  flex: 3;
+  background: var(--color-bg);
+  border-radius: 6rpx;
+  padding: 12rpx 14rpx;
+  min-width: 0;
+}
+.ing-row__qty,
+.ing-row__unit {
+  flex: 1;
+  background: var(--color-bg);
+  border-radius: 6rpx;
+  padding: 12rpx 8rpx;
+  font-size: 26rpx;
+  text-align: center;
+}
+.ing-row__main {
+  flex: none;
+  font-size: 22rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 6rpx;
+  border: 1rpx solid var(--color-border);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+}
+.ing-row__main--on {
+  background: rgba(77, 171, 109, 0.14);
+  color: #2F7D4C;
+  border-color: rgba(77, 171, 109, 0.4);
+}
+.ing-row__del {
+  flex: none;
+  width: 44rpx;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 30rpx;
+}
+.add-row { margin-top: 8rpx; color: var(--color-accent); font-size: 28rpx; }
+
+.save-btn {
+  margin: 40rpx 24rpx 0;
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-radius: var(--radius-card);
+  font-size: 32rpx;
+}

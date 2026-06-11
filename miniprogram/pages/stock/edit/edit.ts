@@ -15,14 +15,21 @@ Page({
     locations: [] as string[],
     locationIndex: 0,
     expiry: '',
-    allStatuses: [] as string[],
+    statusOptions: [] as Array<{ name: string; on: boolean }>,
     selectedStatuses: [] as string[],
+  },
+
+  /** 根据已选状态重建多选 chip 的 on 标记 */
+  buildStatusOptions(selected: string[]) {
+    this.setData({
+      statusOptions: getStatuses().map((name) => ({ name, on: selected.indexOf(name) >= 0 })),
+      selectedStatuses: selected,
+    });
   },
 
   onLoad(options: Record<string, string>) {
     this.loadIngredients();
     const locations = getLocations();
-    const allStatuses = getStatuses();
     const id = options.id || '';
 
     if (id) {
@@ -42,14 +49,14 @@ Page({
           locations,
           locationIndex: locIdx,
           expiry: it.expiry || '',
-          allStatuses,
-          selectedStatuses: it.statuses.slice(),
         });
+        this.buildStatusOptions(it.statuses.slice());
         wx.setNavigationBarTitle({ title: '编辑库存' });
         return;
       }
     }
-    this.setData({ locations, allStatuses });
+    this.setData({ locations });
+    this.buildStatusOptions([]);
     wx.setNavigationBarTitle({ title: '新增库存' });
   },
 
@@ -129,7 +136,7 @@ Page({
     const i = selected.indexOf(s);
     if (i === -1) selected.push(s);
     else selected.splice(i, 1);
-    this.setData({ selectedStatuses: selected });
+    this.buildStatusOptions(selected);
   },
 
   onSave() {
