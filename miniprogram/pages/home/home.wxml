@@ -1,0 +1,5 @@
+<!-- pages/home/home.wxml — Phase B 骨架 -->
+<view class="empty">
+  <view class="empty__emoji">🏠</view>
+  <view class="empty__hint">首页 · 建设中（Phase C）</view>
+</view>

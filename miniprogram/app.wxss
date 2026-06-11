@@ -1,57 +1,112 @@
-/* app.wxss — 全局样式变量（参考 docs/architecture.md §7 / spec.md §7）*/
+/* app.wxss — 全局样式（Notion 浅色风，参考 docs/architecture.md §7）*/
 
 page {
-  --color-bg: #FBF8F3;           /* 米白底色 */
-  --color-card: #FFFFFF;         /* 卡片背景 */
-  --color-primary: #F4845F;      /* 橙色，主强调色 */
-  --color-green: #6DBF86;        /* 绿色，可做/完成状态 */
-  --color-yellow: #F9C74F;       /* 黄色，差一点点/警告 */
-  --color-red: #E05C5C;          /* 红色，已过期 */
-  --color-text: #2D2D2D;         /* 主文字色 */
-  --color-text-secondary: #888888; /* 辅助文字色 */
-  --color-border: #EEE8E0;       /* 边框色 */
-  --color-white: #FFFFFF;        /* 纯白（彩色底上的文字/卡片）*/
-  --color-warn-text: #C98A00;    /* 警告琥珀文字（浅底上）*/
-  --color-warn-text-strong: #7A5A00; /* 警告琥珀文字（黄色标签上）*/
-  --radius-card: 12px;
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-fab: 0 4rpx 16rpx rgba(244, 132, 95, 0.5); /* 悬浮按钮阴影 */
+  --color-bg: #FFFFFF;            /* 主底色 */
+  --color-bg-soft: #F7F7F5;       /* 浅灰分区底 */
+  --color-card: #FFFFFF;          /* 卡片 */
+  --color-text: #37352F;          /* 主文字 */
+  --color-text-secondary: #9B9A97;/* 次要文字 */
+  --color-border: #EAE9E6;        /* 分割线 / 边框 */
+  --color-accent: #2383E2;        /* 强调蓝 */
+  --color-green: #4DAB6D;          /* 可做 / 完成 */
+  --color-yellow: #D9A441;         /* 差一点点 / 警告 */
+  --color-red: #E03E3E;            /* 过期 / 删除 */
+  --color-chip-bg: #F1F0EE;        /* 标签底 */
+  --color-white: #FFFFFF;
+  --radius-card: 8px;
+  --radius-chip: 4px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
 
-  background-color: var(--color-bg);
+  background-color: var(--color-bg-soft);
   color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', sans-serif;
   font-size: 28rpx;
+  line-height: 1.5;
+}
+
+view, text, button, input, textarea, picker, scroll-view {
   box-sizing: border-box;
 }
 
-view, text, button, input, textarea, picker {
-  box-sizing: border-box;
-}
-
-/* 通用卡片 */
+/* 通用卡片：弱边框 + 极轻阴影，Notion 块感 */
 .card {
   background: var(--color-card);
+  border: 1rpx solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: 24rpx;
   margin: 16rpx 24rpx;
 }
 
-/* 通用空状态容器 */
+/* 分区标题 */
+.section-title {
+  padding: 24rpx 32rpx 8rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 1rpx;
+}
+
+/* Notion chip 标签：浅底 + 深字 + 小圆角 */
+.chip {
+  display: inline-block;
+  padding: 2rpx 14rpx;
+  margin: 4rpx 8rpx 4rpx 0;
+  font-size: 22rpx;
+  border-radius: var(--radius-chip);
+  background: var(--color-chip-bg);
+  color: var(--color-text);
+}
+.chip--accent { background: rgba(35, 131, 226, 0.12); color: var(--color-accent); }
+.chip--green  { background: rgba(77, 171, 109, 0.14); color: #2F7D4C; }
+.chip--yellow { background: rgba(217, 164, 65, 0.16); color: #946A12; }
+.chip--red    { background: rgba(224, 62, 62, 0.12); color: var(--color-red); }
+
+/* 文字按钮 */
+.tlink { color: var(--color-accent); font-size: 26rpx; }
+.tlink--danger { color: var(--color-red); }
+
+/* 主按钮（Notion 风：低调实心） */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-radius: var(--radius-card);
+  font-size: 30rpx;
+}
+.btn-ghost {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1rpx solid var(--color-border);
+  border-radius: var(--radius-card);
+  font-size: 26rpx;
+}
+
+/* 通用空状态 */
 .empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 48rpx;
+  padding: 100rpx 48rpx;
   color: var(--color-text-secondary);
   text-align: center;
 }
-.empty__emoji {
-  font-size: 96rpx;
-  margin-bottom: 24rpx;
-}
-.empty__hint {
-  font-size: 26rpx;
-  line-height: 1.6;
+.empty__emoji { font-size: 80rpx; margin-bottom: 20rpx; }
+.empty__hint { font-size: 26rpx; line-height: 1.6; }
+
+/* 悬浮新增按钮 */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 60rpx;
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-size: 52rpx;
+  line-height: 92rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(35, 131, 226, 0.35);
+  z-index: 10;
 }

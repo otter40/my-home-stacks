@@ -1,83 +1,87 @@
-// utils/shopping.ts — 购物袋业务逻辑（自动汇总 + 已购买处理）
-import { Recipe, InventoryItem } from '../types/index';
-import { getInventory, saveInventory, genId } from './storage';
-import { normalizeName } from './recipe';
-import { UNCLASSIFIED_LOCATION } from './inventory';
+// utils/shopping.ts — 购物袋业务逻辑（v2，基于 ingredientId）
+import { Recipe, StockItem } from '../types/index';
+import { getStock, saveStock, genId } from './storage';
+import { ingredientName, stockTotalOf, findOrCreateByName, getIngredient } from './ingredient';
+import { UNCLASSIFIED_LOCATION } from '../constants/options';
 
-/** 自动汇总项来源 */
 export type AutoSource = 'recipe' | 'needBuy';
 
-/** 自动汇总的购物项（只读，由菜谱缺料和 needBuy 库存推导）*/
+/** 自动汇总项（只读） */
 export interface AutoShoppingItem {
+  ingredientId: string;
   name: string;
   qty?: number;
   unit?: string;
-  sources: AutoSource[]; // 命中的来源，便于界面展示（可能同时来自菜谱与待购）
+  sources: AutoSource[];
 }
 
 /**
- * 计算自动汇总项（参考 docs/spec.md §6.5）。
- * 来源：
- *  1) 所有 isToday === true 的菜谱中，库存里不存在或 qty <= 0 的食材
+ * 自动汇总（参考 docs/spec.md §6.5）：
+ *  1) 所有 isToday 菜谱中库存合计 <= 0 的食材
  *  2) 库存中 needBuy === true 的食材
- * 按食材名称（归一化）去重合并。
+ * 按 ingredientId 去重合并。
  */
-export function getAutoItems(recipes: Recipe[], inventory: InventoryItem[]): AutoShoppingItem[] {
+export function getAutoItems(recipes: Recipe[], stock: StockItem[]): AutoShoppingItem[] {
   const map = new Map<string, AutoShoppingItem>();
 
   const addOrMerge = (
-    name: string,
+    ingredientId: string,
     qty: number | undefined,
     unit: string | undefined,
     source: AutoSource
   ) => {
-    const key = normalizeName(name);
-    if (!key) return;
-    const existing = map.get(key);
+    const existing = map.get(ingredientId);
     if (existing) {
       if (!existing.sources.includes(source)) existing.sources.push(source);
-      // 已有数量/单位则保留，缺失时补齐
       if (existing.qty === undefined && qty !== undefined) existing.qty = qty;
       if (!existing.unit && unit) existing.unit = unit;
     } else {
-      map.set(key, { name: name.trim(), qty, unit, sources: [source] });
+      map.set(ingredientId, {
+        ingredientId,
+        name: ingredientName(ingredientId),
+        qty,
+        unit,
+        sources: [source],
+      });
     }
   };
 
-  // 来源 1：今天吃的菜谱缺少的食材
+  // 来源 1：今天想吃的菜谱缺料（主 + 辅，库存合计 <= 0）
   for (const recipe of recipes) {
     if (!recipe.isToday) continue;
     for (const ing of recipe.ingredients) {
-      const key = normalizeName(ing.name);
-      const item = inventory.find((inv) => normalizeName(inv.name) === key);
-      const available = !!item && item.qty > 0;
-      if (!available) addOrMerge(ing.name, ing.qty, ing.unit, 'recipe');
+      if (stockTotalOf(ing.ingredientId, stock) <= 0) {
+        addOrMerge(ing.ingredientId, ing.qty, ing.unit, 'recipe');
+      }
     }
   }
 
-  // 来源 2：库存中标记“需要购买”的食材
-  for (const item of inventory) {
-    if (item.needBuy) addOrMerge(item.name, undefined, item.unit, 'needBuy');
+  // 来源 2：库存标记“需要购买”
+  for (const item of stock) {
+    if (item.needBuy) addOrMerge(item.ingredientId, undefined, item.unit, 'needBuy');
   }
 
   return Array.from(map.values());
 }
 
 /**
- * 执行“已购买”逻辑（参考 docs/spec.md §6.5）。
- * - 库存中已存在该食材 → 数量增加（增加值取该项 qty，无则 +1），并将 needBuy 置为 false
- * - 库存中不存在 → 新建库存记录（数量默认 qty 或 1，位置默认“未分类”）
- * 仅更新库存并写回，返回更新后的库存数组。
- * （从购物袋移除该项由调用方负责：手动项删存储、自动项随库存更新自然消失。）
+ * 已购买入库（参考 docs/spec.md §6.6）。
+ * item 可带 ingredientId（自动项），或仅名称（手动项 → 按名找/新建食材）。
+ * 库存已有该食材则加量并清 needBuy，否则新建库存条目。返回更新后的库存。
  */
-export function markAsPurchased(
-  item: { name: string; qty?: number; unit?: string },
-  inventory?: InventoryItem[]
-): InventoryItem[] {
-  const items = inventory ? inventory.slice() : getInventory();
-  const key = normalizeName(item.name);
+export function markAsPurchased(item: {
+  ingredientId?: string;
+  name: string;
+  qty?: number;
+  unit?: string;
+}): StockItem[] {
+  const ingredient = item.ingredientId
+    ? getIngredient(item.ingredientId) || findOrCreateByName(item.name, item.unit)
+    : findOrCreateByName(item.name, item.unit);
+
+  const items = getStock();
   const addQty = item.qty && item.qty > 0 ? item.qty : 1;
-  const idx = items.findIndex((it) => normalizeName(it.name) === key);
+  const idx = items.findIndex((s) => s.ingredientId === ingredient.id);
 
   if (idx !== -1) {
     items[idx].qty += addQty;
@@ -85,15 +89,16 @@ export function markAsPurchased(
   } else {
     items.push({
       id: genId(),
-      name: item.name.trim(),
+      ingredientId: ingredient.id,
       qty: addQty,
-      unit: item.unit || '',
+      unit: item.unit || ingredient.defaultUnit || '',
       location: UNCLASSIFIED_LOCATION,
       expiry: null,
+      statuses: [],
       needBuy: false,
     });
   }
 
-  saveInventory(items);
+  saveStock(items);
   return items;
 }

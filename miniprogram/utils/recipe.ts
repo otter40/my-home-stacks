@@ -1,85 +1,110 @@
-// utils/recipe.ts — 菜谱相关业务逻辑
-import { Recipe, InventoryItem, IngredientMatch, FridgeResult } from '../types/index';
-import { getCustomCategories, saveCustomCategories } from './storage';
+// utils/recipe.ts — 菜谱业务逻辑（v2，主料匹配 + 做完扣减）
+import { Recipe, StockItem, FridgeResult } from '../types/index';
+import {
+  getRecipes,
+  saveRecipes,
+  getStock,
+  addCookRecord,
+  genId,
+  todayISO,
+  getCustomOptions,
+  saveCustomOptions,
+} from './storage';
+import { RECIPE_TYPES, CUISINES, PREP_OPTIONS, isSeasoningCategory } from '../constants/options';
+import { ingredientName, stockTotalOf, getIngredient } from './ingredient';
+import { deductForRecipe } from './stock';
 
-/** 默认菜谱分类（固定，用户可新增）*/
-export const DEFAULT_CATEGORIES = ['荤菜', '素菜', '汤羹', '主食', '其他'];
-
-/** 分类标签配色（与 app.wxss 调色板一致；未知/自定义分类用灰色兜底）*/
-export const CATEGORY_COLORS: Record<string, string> = {
-  荤菜: '#F4845F',
-  素菜: '#6DBF86',
-  汤羹: '#F9C74F',
-  主食: '#C89B7B',
-  其他: '#9AA0A6',
-};
-
-/** 返回分类对应的标签颜色 */
-export function categoryColor(category: string): string {
-  return CATEGORY_COLORS[category] || '#9AA0A6';
-}
-
-/** 食材名称归一化：去首尾空格 + 转小写，用于精确匹配 */
-export function normalizeName(name: string): string {
-  return name.trim().toLowerCase();
-}
-
-/** 返回默认分类 + 用户自定义分类的合并列表（去重，保持默认在前）*/
-export function getCategories(): string[] {
-  const custom = getCustomCategories();
-  const result = [...DEFAULT_CATEGORIES];
-  for (const c of custom) {
-    if (!result.includes(c)) result.push(c);
-  }
+// ---- 选项（默认 + 自定义）----
+export function getRecipeTypes(): string[] {
+  const custom = getCustomOptions().recipeTypes;
+  const result = [...RECIPE_TYPES];
+  for (const c of custom) if (!result.includes(c)) result.push(c);
   return result;
 }
+export function getCuisines(): string[] {
+  const custom = getCustomOptions().cuisines;
+  const result = [...CUISINES];
+  for (const c of custom) if (!result.includes(c)) result.push(c);
+  return result;
+}
+export function getPrepOptions(): string[] {
+  return [...PREP_OPTIONS];
+}
+export function addRecipeType(name: string): string[] {
+  const t = name.trim();
+  if (t && !getRecipeTypes().includes(t)) {
+    const opts = getCustomOptions();
+    opts.recipeTypes.push(t);
+    saveCustomOptions(opts);
+  }
+  return getRecipeTypes();
+}
+export function addCuisine(name: string): string[] {
+  const t = name.trim();
+  if (t && !getCuisines().includes(t)) {
+    const opts = getCustomOptions();
+    opts.cuisines.push(t);
+    saveCustomOptions(opts);
+  }
+  return getCuisines();
+}
 
-/**
- * 新增自定义分类。
- * 去首尾空格；为空或已存在（与现有分类完全相同）则不重复添加。
- * 返回新增后的完整分类列表。
- */
-export function addCategory(name: string): string[] {
-  const trimmed = name.trim();
-  if (!trimmed) return getCategories();
-  if (getCategories().includes(trimmed)) return getCategories();
-  const custom = getCustomCategories();
-  custom.push(trimmed);
-  saveCustomCategories(custom);
-  return getCategories();
+/** 某食材分类的 main 默认值（调味/香料/佐料默认辅料） */
+export function defaultMain(category: string): boolean {
+  return !isSeasoningCategory(category);
 }
 
 /**
- * 计算某菜谱的每个食材在库存中的匹配状态。
- * 匹配规则：名称去首尾空格、不区分大小写精确匹配，且库存数量 > 0 视为可用。
+ * 冰箱可做状态（只看主料，参考 docs/spec.md §6.6）。
+ * - 主料缺 0 → ok；缺 1–2 → almost；缺 ≥3 → no（不展示）
+ * - 辅料缺失不影响判定，单独列在 missingOptional
  */
-export function matchIngredients(recipe: Recipe, inventory: InventoryItem[]): IngredientMatch[] {
-  return recipe.ingredients.map((ing) => {
-    const key = normalizeName(ing.name);
-    const item = inventory.find((inv) => normalizeName(inv.name) === key);
-    const haveQty = item ? item.qty : 0;
-    return {
-      name: ing.name,
-      qty: ing.qty,
-      unit: ing.unit,
-      available: !!item && item.qty > 0,
-      haveQty,
-    };
-  });
-}
-
-/**
- * 计算菜谱的可做状态（参考 docs/architecture.md §6）。
- * - 全部食材满足 → 'ok'
- * - 缺 1–2 项 → 'almost'
- * - 缺 3 项及以上 → 'no'
- */
-export function calcFridgeStatus(recipe: Recipe, inventory: InventoryItem[]): FridgeResult {
-  const matches = matchIngredients(recipe, inventory);
-  const missing = matches.filter((m) => !m.available).map((m) => m.name);
+export function calcFridgeStatus(recipe: Recipe, stock?: StockItem[]): FridgeResult {
+  const st = stock || getStock();
+  const missingMain: string[] = [];
+  const missingOptional: string[] = [];
+  for (const ing of recipe.ingredients) {
+    const enough = stockTotalOf(ing.ingredientId, st) > 0;
+    if (enough) continue;
+    const name = ingredientName(ing.ingredientId);
+    if (ing.main) missingMain.push(name);
+    else missingOptional.push(name);
+  }
   let status: FridgeResult['status'];
-  if (missing.length === 0) status = 'ok';
-  else if (missing.length <= 2) status = 'almost';
+  if (missingMain.length === 0) status = 'ok';
+  else if (missingMain.length <= 2) status = 'almost';
   else status = 'no';
-  return { status, missing, matches };
+  return { status, missingMain, missingOptional };
+}
+
+/** 主料名称一览（卡片展示用） */
+export function mainNames(recipe: Recipe): string[] {
+  return recipe.ingredients
+    .filter((i) => i.main)
+    .map((i) => ingredientName(i.ingredientId));
+}
+
+/** 加入/移出今天想吃 */
+export function setToday(id: string, value: boolean): Recipe[] {
+  const recipes = getRecipes();
+  const idx = recipes.findIndex((r) => r.id === id);
+  if (idx !== -1) {
+    recipes[idx].isToday = value;
+    saveRecipes(recipes);
+  }
+  return recipes;
+}
+
+/**
+ * 做完了：按用量从库存扣减（主+辅）、写入做菜历史、移出今天想吃。
+ */
+export function cookDone(recipe: Recipe): void {
+  deductForRecipe(recipe);
+  addCookRecord({ id: genId(), recipeId: recipe.id, name: recipe.name, date: todayISO() });
+  setToday(recipe.id, false);
+}
+
+/** 校验菜谱食材引用是否仍有效（食材被删时提示用） */
+export function hasDanglingIngredient(recipe: Recipe): boolean {
+  return recipe.ingredients.some((i) => !getIngredient(i.ingredientId));
 }

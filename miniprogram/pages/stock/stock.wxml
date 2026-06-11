@@ -1,0 +1,5 @@
+<!-- pages/stock/stock.wxml — Phase B 骨架 -->
+<view class="empty">
+  <view class="empty__emoji">🧊</view>
+  <view class="empty__hint">库存 · 建设中（Phase D）</view>
+</view>

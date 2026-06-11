@@ -1,67 +1,78 @@
-# Tasks
+# Tasks (v2)
 
-## Phase 1 — 项目初始化与基础框架
+> v2 改造：食材库/库存拆分并完整关联、菜谱分类升级为多字段、今天吃+冰箱合并进首页、
+> 购物袋改子页面、新增"我的"管理页、UI 改 Notion 浅色风。
+> v1 各阶段记录见文末「Done（历史）」。
 
-- [X] 使用微信开发者工具创建项目，选择 TS-基础模版（普通渲染模式）
-- [X] 配置 `app.json`：注册全部页面路径，配置底部 TabBar（5 个 tab，含 emoji 图标）
-- [X] 创建 `docs/` 目录，放入 spec.md / architecture.md / task.md
-- [X] 创建 `miniprogram/types/index.ts`，定义全部 TypeScript interface（Recipe / Ingredient / InventoryItem / ShoppingItem）
-- [X] 创建 `utils/storage.ts`，封装所有本地存储读写函数（getRecipes / saveRecipes / getInventory / saveInventory / getShoppingItems / saveShoppingItems / getCustomCategories / saveCustomCategories / getCustomLocations / saveCustomLocations）
-- [X] 创建 `utils/seed.ts`，写入示例菜谱（5 条）和示例库存（8 条）
-- [X] 在 `app.ts` 中实现首次启动检测，若 `initialized` 不存在则写入 seed 数据
-- [X] 在 `app.wxss` 中定义全局 CSS 变量（颜色、圆角、阴影）
-- [X] 创建全部页面的空壳文件（.ts / .wxml / .wxss），确保小程序能正常编译启动
+## Phase A — 数据模型与逻辑层重构
 
-## Phase 2 — 业务逻辑层
+- [X] 重写 `types/index.ts`：Ingredient / RecipeIngredient / Recipe(types/cuisines/prep) / StockItem(statuses) / ShoppingItem / CookRecord / CustomOptions
+- [X] 新增 `constants/options.ts`：RECIPE_TYPES / CUISINES / PREP_OPTIONS / INGREDIENT_CATEGORIES / STOCK_STATUSES / 默认 LOCATIONS + isSeasoningCategory
+- [X] 重写 `utils/storage.ts`：新 key 集合 + `customOptions` + `cookHistory` + SCHEMA_VERSION + clearAll + todayISO
+- [X] 重写 `utils/seed.ts`：buildSeed() 先建食材库（9）→ 库存（8，引用）→ 菜谱（5，引用，含 main 标记）
+- [X] 新增 `utils/ingredient.ts`：增删改、按分类分组、`recipesUsing`、`stockTotalOf`、`findOrCreateByName`、引用拦截删除
+- [X] 重写 `utils/recipe.ts`：选项合并、`defaultMain`、`calcFridgeStatus`(主料)、`setToday`、`cookDone`
+- [X] 重写 `utils/stock.ts`（替换 inventory.ts）：位置/状态选项、保质期、加减、`toggleNeedBuy`、`deductForRecipe`
+- [X] 重写 `utils/shopping.ts`：自动汇总（基于 ingredientId）、已购买入库（关联/新建食材）
+- [X] 新增 `utils/stats.ts`：weeklyCooked / monthlyCooked / topDishes / totalCooked
+- [X] `app.ts`：schema 版本检查 + 首次/升级写 seed（导出 writeSeed 供"我的"页复用）
 
-- [X] 创建 `utils/recipe.ts`：实现 `getCategories()`、`addCategory()`、`matchIngredients()`
-- [X] 创建 `utils/inventory.ts`：实现 `getLocations()`、`addLocation()`、`getExpiryStatus()`、`adjustQty()`
-- [X] 创建 `utils/shopping.ts`：实现 `getAutoItems()`（自动汇总逻辑，含去重）、`markAsPurchased()`（已购买逻辑，更新或新建库存）
+## Phase B — Notion 浅色 UI 框架
 
-## Phase 3 — 菜谱库页面
+- [X] 重写 `app.wxss`：Notion 浅色调色板 + 通用组件样式（.card / .section-title / .chip / 按钮 / .empty / .fab）
+- [X] 重写 `app.json`：TabBar 改为 首页/库存/菜谱/食材/我的，注册全部页面与子页面
+- [X] 清理旧页面目录（today / fridge / inventory / 旧 recipes / 旧 shopping），建立 9 个新页面骨架
 
-- [X] `pages/recipes/recipes`：列表展示所有菜谱，支持按分类筛选（Tab 切换）和按菜名搜索
-- [X] `pages/recipes/edit`：新增 / 编辑菜谱表单，含菜名、分类选择（支持新增自定义分类）、食材动态列表（增删行）、做法文本域
-- [X] 菜谱卡片：显示菜名、分类标签（带颜色）、食材简要列表
-- [X] 删除菜谱：二次确认（`wx.showModal`）后删除
+## Phase C — 首页
 
-## Phase 4 — 库存页面
+- [ ] `pages/home/home`：欢迎条 + 今天想吃（卡片 + 做完了扣减）+ 冰箱建议（只看主料，加入想吃）+ 购物袋摘要入口
 
-- [X] `pages/inventory/inventory`：按存放位置分组展示食材，各组可折叠
-- [X] 每项显示：名称、数量（含 +/- 快捷按钮）、单位、保质期状态标签（已过期/即将到期/正常）
-- [X] 「需要购买」开关，切换 `needBuy` 状态
-- [X] `pages/inventory/edit`：新增 / 编辑食材表单，含名称、数量、单位、存放位置（支持新增自定义位置）、保质期日期选择
-- [X] 删除食材：二次确认后删除
+## Phase D — 库存页
 
-## Phase 5 — 今天吃页面
+- [ ] `pages/stock/stock`：按位置分组（可折叠）、状态多选标签、保质期标签、± 加减、按钮式"需要购买"
+- [ ] `pages/stock/edit`：选食材库食材/新建、数量、单位、位置、保质期、状态多选；删除二次确认
 
-- [X] `pages/today/today`：展示所有 `isToday === true` 的菜谱卡片
-- [X] 每张卡片显示：菜名、分类标签、食材列表
-- [X] 「✅ 做完了」按钮：将该菜 `isToday` 设为 `false`，从列表移除
-- [X] 空状态页：提示引导用户前往"冰箱能做什么"或"菜谱库"
+## Phase E — 菜谱页
 
-## Phase 6 — 冰箱能做什么页面
+- [ ] `pages/recipes/recipes`：类型/菜系筛选 + 菜名搜索 + 卡片「加入今天吃」按钮
+- [ ] `pages/recipes/edit`：类型(多选)/菜系(多选)/提前备菜(单选) + 从食材库选食材(含主料开关)动态行 + 做法；删除二次确认
 
-- [X] `pages/fridge/fridge`：读取所有菜谱和库存，计算每个菜谱的可做状态
-- [X] 分组展示：「可以做」（全部食材满足）和「差一点点」（缺 1–2 项）
-- [X] 可以做的卡片：显示菜名、分类、食材状态，提供「加入今天吃」按钮
-- [X] 差一点点的卡片（优化项）：显示缺少的食材名称列表
+## Phase F — 食材页
 
-## Phase 7 — 购物袋页面
+- [ ] `pages/ingredients/ingredients`：按食材分类分组罗列；点击查看库存合计 + 反向关联菜谱
+- [ ] `pages/ingredients/edit`：名称、分类(支持新增)、默认单位；删除二次确认（含引用提示）
 
-- [X] `pages/shopping/shopping`：自动汇总项（只读）+ 手动添加项合并展示
-- [X] 手动添加表单：输入名称（必填）、数量、单位，添加为 ShoppingItem
-- [X] 「已购买」操作：更新/新建库存，移除该项，操作后给出轻提示（`wx.showToast`）
-- [X] 手动添加项支持删除
+## Phase G — 购物袋子页 + 我的页
 
-## Phase 8 — 整体打磨
+- [ ] `pages/shopping/shopping`：自动汇总 + 手动添加 + 已购买入库 + 删除（从首页入口进入）
+- [ ] `pages/profile/profile`：数据导出/导入、分类标签管理、清空/重置、使用统计
 
-- [X] 确认所有页面 `onShow` 时重新读取数据（保证 TabBar 切换后数据同步）
-- [X] 统一各页面空状态展示和引导文案
-- [X] 检查全局样式变量引用一致性，去除 magic color 值
-- [ ] 在真机上走一遍完整使用流程，修复发现的问题（待用户真机走查）
+## Phase H — 整体打磨
 
-## Done
+- [ ] onShow 同步核对、空状态文案统一、样式变量一致性、真机完整流程走查
+
+## Done（v2）
+
+### 2026-06-12: Phase A 数据/逻辑层 + Phase B UI 框架完成 ✅
+- Phase A（纯逻辑）
+  - types：Ingredient / RecipeIngredient(含 main) / Recipe(types/cuisines/prep) / StockItem(statuses) / ShoppingItem / CookRecord / CustomOptions / FridgeResult
+  - constants/options.ts：全部默认选项 + isSeasoningCategory（调味/香料/佐料 → 默认辅料）
+  - storage.ts：8 个 key + SCHEMA_VERSION=2 + clearAll + todayISO；ingredient/recipe/stock/shopping 各 utils 按 ingredientId 关联
+  - 关键算法：calcFridgeStatus 只看主料、deductForRecipe 按到期日升序扣减、markAsPurchased 入库（必要时新建食材）、cookDone 串联扣减+历史+移出
+  - app.ts：onLaunch 检测 schemaVersion，不一致即 clearAll + writeSeed（已与用户确认本地无数据保留）
+  - 导入图无环：recipe→stock/ingredient，二者不反向依赖
+- Phase B（UI 框架）
+  - app.wxss 改 Notion 浅色（白/浅灰、细分割线、chip 标签、低调蓝强调、弱阴影）
+  - app.json TabBar：🏠首页 / 🧊库存 / 📖菜谱 / 🥕食材 / 👤我的；购物袋等为子页面
+  - 删除旧 5 页，新建 9 个页面骨架（占位空状态），项目可重新编译启动
+- 待验证（微信开发者工具）
+  - 因数据结构升级，重新编译后会自动 clearAll 并写入 v2 seed（schemaVersion 0/1 → 2）
+  - 底部 5 个新 tab 可切换、各页显示占位；Storage 面板应见 ingredients(9)/stock(8)/recipes(5)/schemaVersion=2
+- 说明：各页功能将在 Phase C–G 实现并逐页验证
+
+## Done（历史）
+
+### v1（已被 v2 取代，记录留档）
 
 ### 2026-06-12: Phase 1 项目初始化与基础框架完成 ✅
 - 实现/变更文件

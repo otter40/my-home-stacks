@@ -1,20 +1,36 @@
-// utils/storage.ts — 本地存储读写封装
+// utils/storage.ts — 本地存储读写封装（v2）
 // 唯一允许调用 wx.setStorageSync / wx.getStorageSync 的地方。
-// 页面层与其它 utils 一律通过本模块读写数据。
+import {
+  Ingredient,
+  Recipe,
+  StockItem,
+  ShoppingItem,
+  CookRecord,
+  CustomOptions,
+} from '../types/index';
 
-import { Recipe, InventoryItem, ShoppingItem } from '../types/index';
+/** 当前数据结构版本（升级时若不一致则重置并重新写 seed） */
+export const SCHEMA_VERSION = 2;
 
-/** Storage Key 一览（参考 docs/architecture.md §3.1） */
 export const KEYS = {
+  ingredients: 'ingredients',
   recipes: 'recipes',
-  inventory: 'inventory',
+  stock: 'stock',
   shoppingItems: 'shoppingItems',
-  customCategories: 'customCategories',
-  customLocations: 'customLocations',
+  cookHistory: 'cookHistory',
+  customOptions: 'customOptions',
+  schemaVersion: 'schemaVersion',
   initialized: 'initialized',
 } as const;
 
-/** 通用读取：key 不存在时返回传入的默认值，绝不抛异常 */
+const EMPTY_CUSTOM: CustomOptions = {
+  recipeTypes: [],
+  cuisines: [],
+  ingredientCategories: [],
+  locations: [],
+  stockStatuses: [],
+};
+
 function read<T>(key: string, fallback: T): T {
   try {
     const v = wx.getStorageSync(key);
@@ -26,7 +42,6 @@ function read<T>(key: string, fallback: T): T {
   }
 }
 
-/** 通用写入：整体覆盖写 */
 function write<T>(key: string, value: T): void {
   try {
     wx.setStorageSync(key, value);
@@ -35,23 +50,31 @@ function write<T>(key: string, value: T): void {
   }
 }
 
+// ---- 食材库 ----
+export function getIngredients(): Ingredient[] {
+  return read<Ingredient[]>(KEYS.ingredients, []);
+}
+export function saveIngredients(items: Ingredient[]): void {
+  write(KEYS.ingredients, items);
+}
+
 // ---- 菜谱 ----
 export function getRecipes(): Recipe[] {
   return read<Recipe[]>(KEYS.recipes, []);
 }
-export function saveRecipes(recipes: Recipe[]): void {
-  write(KEYS.recipes, recipes);
+export function saveRecipes(items: Recipe[]): void {
+  write(KEYS.recipes, items);
 }
 
 // ---- 库存 ----
-export function getInventory(): InventoryItem[] {
-  return read<InventoryItem[]>(KEYS.inventory, []);
+export function getStock(): StockItem[] {
+  return read<StockItem[]>(KEYS.stock, []);
 }
-export function saveInventory(items: InventoryItem[]): void {
-  write(KEYS.inventory, items);
+export function saveStock(items: StockItem[]): void {
+  write(KEYS.stock, items);
 }
 
-// ---- 购物袋手动添加项 ----
+// ---- 购物袋手动项 ----
 export function getShoppingItems(): ShoppingItem[] {
   return read<ShoppingItem[]>(KEYS.shoppingItems, []);
 }
@@ -59,23 +82,34 @@ export function saveShoppingItems(items: ShoppingItem[]): void {
   write(KEYS.shoppingItems, items);
 }
 
-// ---- 用户自定义菜谱分类 ----
-export function getCustomCategories(): string[] {
-  return read<string[]>(KEYS.customCategories, []);
+// ---- 做菜历史 ----
+export function getCookHistory(): CookRecord[] {
+  return read<CookRecord[]>(KEYS.cookHistory, []);
 }
-export function saveCustomCategories(cats: string[]): void {
-  write(KEYS.customCategories, cats);
+export function saveCookHistory(items: CookRecord[]): void {
+  write(KEYS.cookHistory, items);
 }
-
-// ---- 用户自定义存放位置 ----
-export function getCustomLocations(): string[] {
-  return read<string[]>(KEYS.customLocations, []);
-}
-export function saveCustomLocations(locs: string[]): void {
-  write(KEYS.customLocations, locs);
+export function addCookRecord(record: CookRecord): void {
+  const list = getCookHistory();
+  list.push(record);
+  saveCookHistory(list);
 }
 
-// ---- 初始化标记 ----
+// ---- 自定义选项 ----
+export function getCustomOptions(): CustomOptions {
+  return { ...EMPTY_CUSTOM, ...read<Partial<CustomOptions>>(KEYS.customOptions, {}) };
+}
+export function saveCustomOptions(opts: CustomOptions): void {
+  write(KEYS.customOptions, opts);
+}
+
+// ---- 版本 / 初始化 ----
+export function getSchemaVersion(): number {
+  return read<number>(KEYS.schemaVersion, 0);
+}
+export function setSchemaVersion(v: number): void {
+  write(KEYS.schemaVersion, v);
+}
 export function isInitialized(): boolean {
   return read<boolean>(KEYS.initialized, false);
 }
@@ -83,7 +117,27 @@ export function setInitialized(value: boolean): void {
   write(KEYS.initialized, value);
 }
 
-/** 生成唯一 ID（参考 docs/architecture.md §3.3，不依赖外部库） */
+/** 清空全部业务数据（保留无，连 initialized 一并清） */
+export function clearAll(): void {
+  Object.values(KEYS).forEach((k) => {
+    try {
+      wx.removeStorageSync(k);
+    } catch (e) {
+      console.error(`[storage] remove "${k}" failed`, e);
+    }
+  });
+}
+
+/** 生成唯一 ID（不依赖外部库） */
 export function genId(): string {
   return Date.now().toString() + Math.random().toString(36).slice(2);
+}
+
+/** 今天的 ISO 日期字符串（本地时区，YYYY-MM-DD） */
+export function todayISO(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }

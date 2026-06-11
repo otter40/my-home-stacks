@@ -1,74 +1,80 @@
-// types/index.ts — 全局 TypeScript 数据结构定义
-// 参考 docs/spec.md §4
+// types/index.ts — 全局数据结构定义（v2，参考 docs/spec.md §4）
 
-/** 菜谱中的食材条目 */
+/** 🥕 食材库目录条目 */
 export interface Ingredient {
-  /** 食材名称，需与 InventoryItem.name 精确匹配（去首尾空格、不区分大小写） */
+  id: string;
   name: string;
-  /** 数量 */
-  qty: number;
-  /** 单位（个 / g / 把 / 勺 等） */
-  unit: string;
+  category: string;       // 食材分类（单选）
+  defaultUnit?: string;   // 默认单位（建库存/菜谱时带出，可选）
 }
 
-/** 菜谱 */
+/** 菜谱中的食材引用行（引用食材库） */
+export interface RecipeIngredient {
+  ingredientId: string;   // 引用 Ingredient.id
+  qty: number;
+  unit: string;
+  main: boolean;          // 是否主料（冰箱建议只看主料）
+}
+
+/** 📖 菜谱 */
 export interface Recipe {
   id: string;
-  /** 菜名 */
   name: string;
-  /** 分类（荤菜 / 素菜 / 汤羹 / 主食 / 其他，可自定义新增） */
-  category: string;
-  /** 所需食材列表 */
-  ingredients: Ingredient[];
-  /** 做法（可选，纯文本） */
-  steps?: string;
-  /** 是否在"今天吃"列表中 */
-  isToday: boolean;
+  types: string[];        // 类型（多选）
+  cuisines: string[];     // 菜系（多选）
+  prep: string;           // 提前备菜（单选）
+  ingredients: RecipeIngredient[];
+  steps?: string;         // 做法（可选）
+  isToday: boolean;       // 是否在"今天想吃"中
 }
 
-/** 库存食材（食材库与库存合并为一张表） */
-export interface InventoryItem {
+/** 🛖 库存（家里实际存货） */
+export interface StockItem {
   id: string;
-  /** 食材名称 */
-  name: string;
-  /** 当前数量 */
+  ingredientId: string;   // 引用 Ingredient.id
   qty: number;
-  /** 单位 */
   unit: string;
-  /** 存放位置（冷藏 / 冷冻 / 常温 / 调料区，可自定义新增） */
-  location: string;
-  /** 到期日，ISO 日期字符串（YYYY-MM-DD），可选 */
-  expiry?: string | null;
-  /** 是否标记"需要购买" */
-  needBuy: boolean;
+  location: string;       // 存放位置（单选，可自定义）
+  expiry?: string | null; // 到期日 ISO（YYYY-MM-DD），可选
+  statuses: string[];     // 状态（多选）
+  needBuy: boolean;       // 标记需要购买
 }
 
-/** 购物袋手动添加项 */
+/** 🛒 购物袋手动添加项 */
 export interface ShoppingItem {
   id: string;
   name: string;
   qty?: number;
   unit?: string;
+  ingredientId?: string;  // 若关联到食材库（可选）
 }
 
-/** 冰箱推荐：单个菜谱的可做状态 */
-export type FridgeStatus = 'ok' | 'almost' | 'no';
+/** 做菜历史（用于使用统计） */
+export interface CookRecord {
+  id: string;
+  recipeId: string;
+  name: string;           // 冗余菜名，避免菜谱删除后丢失
+  date: string;           // ISO 日期 YYYY-MM-DD
+}
+
+/** 用户自定义选项（分类/标签管理） */
+export interface CustomOptions {
+  recipeTypes: string[];
+  cuisines: string[];
+  ingredientCategories: string[];
+  locations: string[];
+  stockStatuses: string[];
+}
 
 /** 保质期状态 */
 export type ExpiryStatus = 'expired' | 'soon' | 'ok';
 
-/** 单个食材在库存中的匹配结果 */
-export interface IngredientMatch {
-  name: string;
-  qty: number;     // 菜谱所需数量
-  unit: string;
-  available: boolean; // 库存中存在且 qty > 0
-  haveQty: number;    // 库存现有数量（0 表示没有）
-}
+/** 冰箱可做状态 */
+export type FridgeStatus = 'ok' | 'almost' | 'no';
 
-/** 菜谱在当前库存下的可做状态结果 */
+/** 菜谱在当前库存下的可做结果（基于主料） */
 export interface FridgeResult {
   status: FridgeStatus;
-  missing: string[];           // 缺少的食材名称列表
-  matches: IngredientMatch[];  // 每个食材的逐项匹配
+  missingMain: string[];     // 缺少的主料名称
+  missingOptional: string[]; // 缺少的辅料名称（不影响可做判定）
 }
