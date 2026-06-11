@@ -1,7 +1,25 @@
-<!-- pages/today/today.wxml — Phase 1 空壳 -->
+<!-- pages/today/today.wxml — 今天吃 -->
 <view class="page">
-  <view class="empty">
+  <view wx:if="{{list.length > 0}}" class="list">
+    <view wx:for="{{list}}" wx:key="id" class="card today">
+      <view class="today__head">
+        <text class="today__name">{{item.name}}</text>
+        <text class="tag" style="background:{{item.tagColor}}">{{item.category}}</text>
+      </view>
+      <view class="today__ings">{{item.ingredientText}}</view>
+      <view class="today__foot">
+        <button class="done-btn" size="mini" data-id="{{item.id}}" bindtap="onDone">✅ 做完了</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty">
     <view class="empty__emoji">🍽️</view>
-    <view class="empty__hint">今天吃 · 页面建设中</view>
+    <view class="empty__hint">今天还没安排吃什么</view>
+    <view class="empty__actions">
+      <button class="entry-btn" bindtap="goFridge">❄️ 看看冰箱能做什么</button>
+      <button class="entry-btn entry-btn--ghost" bindtap="goRecipes">📖 去菜谱库挑一个</button>
+    </view>
   </view>
 </view>
