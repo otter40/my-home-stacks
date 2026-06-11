@@ -1,7 +1,53 @@
-<!-- pages/fridge/fridge.wxml — Phase 1 空壳 -->
+<!-- pages/fridge/fridge.wxml — 冰箱能做什么 -->
 <view class="page">
-  <view class="empty">
+  <block wx:if="{{hasAny}}">
+    <!-- 可以做 -->
+    <view wx:if="{{canMake.length > 0}}" class="section">
+      <view class="section__title">
+        <text class="dot dot--green"></text>可以做（{{canMake.length}}）
+      </view>
+      <view wx:for="{{canMake}}" wx:key="id" class="card recipe">
+        <view class="recipe__head">
+          <text class="recipe__name">{{item.name}}</text>
+          <text class="tag" style="background:{{item.tagColor}}">{{item.category}}</text>
+        </view>
+        <view class="recipe__ings">食材齐全：{{item.ingredientText}}</view>
+        <view class="recipe__foot">
+          <button
+            wx:if="{{item.isToday}}"
+            class="add-btn add-btn--done"
+            size="mini"
+            disabled
+          >已加入今天吃</button>
+          <button
+            wx:else
+            class="add-btn"
+            size="mini"
+            data-id="{{item.id}}"
+            bindtap="onAddToday"
+          >加入今天吃</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 差一点点 -->
+    <view wx:if="{{almost.length > 0}}" class="section">
+      <view class="section__title">
+        <text class="dot dot--yellow"></text>差一点点（{{almost.length}}）
+      </view>
+      <view wx:for="{{almost}}" wx:key="id" class="card recipe">
+        <view class="recipe__head">
+          <text class="recipe__name">{{item.name}}</text>
+          <text class="tag" style="background:{{item.tagColor}}">{{item.category}}</text>
+        </view>
+        <view class="recipe__missing">还差：{{item.missingText}}</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty">
     <view class="empty__emoji">❄️</view>
-    <view class="empty__hint">冰箱能做什么 · 页面建设中</view>
+    <view class="empty__hint">现有库存还做不了已有的菜，去补点食材或添加新菜谱吧</view>
   </view>
 </view>
