@@ -1,7 +1,64 @@
-<!-- pages/shopping/shopping.wxml — Phase 1 空壳 -->
+<!-- pages/shopping/shopping.wxml — 购物袋 -->
 <view class="page">
-  <view class="empty">
+  <!-- 手动添加表单 -->
+  <view class="addbar card">
+    <input
+      class="addbar__name"
+      placeholder="添加物品名称"
+      value="{{form.name}}"
+      bindinput="onFormName"
+    />
+    <input
+      class="addbar__qty"
+      type="digit"
+      placeholder="量"
+      value="{{form.qty}}"
+      bindinput="onFormQty"
+    />
+    <input
+      class="addbar__unit"
+      placeholder="单位"
+      value="{{form.unit}}"
+      bindinput="onFormUnit"
+    />
+    <view class="addbar__btn" bindtap="onAddManual">添加</view>
+  </view>
+
+  <!-- 自动汇总（只读）-->
+  <view wx:if="{{autoItems.length > 0}}" class="section">
+    <view class="section__title">自动汇总（{{autoItems.length}}）</view>
+    <view wx:for="{{autoItems}}" wx:key="name" class="card sitem">
+      <view class="sitem__info">
+        <view class="sitem__name">
+          {{item.name}}
+          <text wx:if="{{item.qty}}" class="sitem__qty">×{{item.qty}}{{item.unit}}</text>
+        </view>
+        <text class="sitem__source">{{item.sourceText}}</text>
+      </view>
+      <button class="buy-btn" size="mini" data-index="{{index}}" bindtap="onPurchaseAuto">已购买</button>
+    </view>
+  </view>
+
+  <!-- 手动添加项 -->
+  <view wx:if="{{manualItems.length > 0}}" class="section">
+    <view class="section__title">手动添加（{{manualItems.length}}）</view>
+    <view wx:for="{{manualItems}}" wx:key="id" class="card sitem">
+      <view class="sitem__info">
+        <view class="sitem__name">
+          {{item.name}}
+          <text wx:if="{{item.qty}}" class="sitem__qty">×{{item.qty}}{{item.unit}}</text>
+        </view>
+      </view>
+      <view class="sitem__actions">
+        <button class="buy-btn" size="mini" data-id="{{item.id}}" bindtap="onPurchaseManual">已购买</button>
+        <text class="link link--danger" data-id="{{item.id}}" bindtap="onDeleteManual">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!hasAny}}" class="empty">
     <view class="empty__emoji">🛒</view>
-    <view class="empty__hint">购物袋 · 页面建设中</view>
+    <view class="empty__hint">购物袋是空的。把库存里要买的标上「需要购买」，或在上方手动添加</view>
   </view>
 </view>

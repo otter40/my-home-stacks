@@ -49,10 +49,10 @@
 
 ## Phase 7 — 购物袋页面
 
-- [ ] `pages/shopping/shopping`：自动汇总项（只读）+ 手动添加项合并展示
-- [ ] 手动添加表单：输入名称（必填）、数量、单位，添加为 ShoppingItem
-- [ ] 「已购买」操作：更新/新建库存，移除该项，操作后给出轻提示（`wx.showToast`）
-- [ ] 手动添加项支持删除
+- [X] `pages/shopping/shopping`：自动汇总项（只读）+ 手动添加项合并展示
+- [X] 手动添加表单：输入名称（必填）、数量、单位，添加为 ShoppingItem
+- [X] 「已购买」操作：更新/新建库存，移除该项，操作后给出轻提示（`wx.showToast`）
+- [X] 手动添加项支持删除
 
 ## Phase 8 — 整体打磨
 
@@ -145,3 +145,20 @@
   - 「加入今天吃」置 isToday=true 写回并 refresh，与 Phase 5 今天吃页打通；已是 isToday 的按钮禁用避免重复
   - onShow 刷新，库存变化（加减/删除）后切回冰箱页可做状态即时重算
 - 验证联动建议：seed 默认「番茄炒蛋/蒜蓉炒菠菜/紫菜蛋花汤/土豆炖鸡」应在「可以做」，「白米饭」缺大米应在「差一点点」；点「加入今天吃」后切到今天吃页应出现，做完了后消失
+- 验证结果：✅ 用户确认冰箱页可做/差一点点分组、加入今天吃联动、今天吃做完了均正常
+
+### 2026-06-12: Phase 7 购物袋页面完成 ✅
+- 实现文件：`pages/shopping/shopping.{ts,wxml,wxss}`
+- 内容
+  - 顶部手动添加栏（名称必填 + 数量 + 单位 → 新建 ShoppingItem 存 shoppingItems）
+  - 「自动汇总」区（只读）：`getAutoItems(recipes, inventory)` 结果，标注来源（今天吃缺料 / 库存待购 / 两者）
+  - 「手动添加」区：可「已购买」+ 可「删除」（删除走 wx.showModal 二次确认）
+  - 「已购买」：调 `markAsPurchased` 更新/新建库存；手动项额外从 shoppingItems 移除；自动项随库存更新自然消失；wx.showToast 轻提示
+  - 两区皆空时空状态
+- 设计上的要点
+  - 自动项「已购买」无需手动删——markAsPurchased 后库存 qty>0 / needBuy=false，下次 getAutoItems 不再产出
+  - 手动项 qty/unit 可空：表单留空则存 undefined，购买时 markAsPurchased 默认 +1
+  - 自动项 wx:key 用归一化后唯一的 name；onShow 刷新保证与今天吃/库存改动同步
+- 待验证（微信开发者工具/真机）
+  - 把某库存项标「需要购买」→ 购物袋自动汇总出现「库存待购」；今天吃加入缺料菜谱 → 出现「今天吃缺料」
+  - 手动添加、已购买（确认库存数量增加/新建「未分类」）、删除二次确认均正常
