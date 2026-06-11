@@ -44,7 +44,7 @@
 }
 .cats__item--active {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   border-color: var(--color-primary);
 }
 
@@ -59,7 +59,7 @@
   font-weight: 600;
 }
 .tag {
-  color: #fff;
+  color: var(--color-white);
   font-size: 22rpx;
   padding: 4rpx 16rpx;
   border-radius: 20rpx;
@@ -95,7 +95,7 @@
   border: 1rpx solid var(--color-border);
 }
 .btn--danger {
-  background: #fff;
+  background: var(--color-white);
   color: var(--color-red);
   border: 1rpx solid var(--color-red);
 }
@@ -109,10 +109,10 @@
   height: 96rpx;
   border-radius: 50%;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   font-size: 56rpx;
   line-height: 96rpx;
   text-align: center;
-  box-shadow: 0 4rpx 16rpx rgba(244, 132, 95, 0.5);
+  box-shadow: var(--shadow-fab);
   z-index: 10;
 }

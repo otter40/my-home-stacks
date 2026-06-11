@@ -56,10 +56,10 @@
 
 ## Phase 8 — 整体打磨
 
-- [ ] 确认所有页面 `onShow` 时重新读取数据（保证 TabBar 切换后数据同步）
-- [ ] 统一各页面空状态展示和引导文案
-- [ ] 检查全局样式变量引用一致性，去除 magic color 值
-- [ ] 在真机上走一遍完整使用流程，修复发现的问题
+- [X] 确认所有页面 `onShow` 时重新读取数据（保证 TabBar 切换后数据同步）
+- [X] 统一各页面空状态展示和引导文案
+- [X] 检查全局样式变量引用一致性，去除 magic color 值
+- [ ] 在真机上走一遍完整使用流程，修复发现的问题（待用户真机走查）
 
 ## Done
 
@@ -162,3 +162,9 @@
 - 待验证（微信开发者工具/真机）
   - 把某库存项标「需要购买」→ 购物袋自动汇总出现「库存待购」；今天吃加入缺料菜谱 → 出现「今天吃缺料」
   - 手动添加、已购买（确认库存数量增加/新建「未分类」）、删除二次确认均正常
+
+### 2026-06-12: Phase 8 整体打磨（代码侧）✅
+- onShow 数据同步：5 个 TabBar 页（today/fridge/recipes/inventory/shopping）均在 onShow 重新读取并重建列表；2 个 edit 子页用 onLoad（每次 navigateTo 全新进入，正确）
+- 空状态统一：各页空状态统一复用 app.wxss 的 `.empty / .empty__emoji / .empty__hint`，文案均带引导
+- 去除 magic color：新增全局变量 `--color-white`、`--color-warn-text`、`--color-warn-text-strong`、`--shadow-fab`；将各页 wxss 中的 `#fff`、`#C98A00`、`#7a5a00`、FAB 阴影 rgba 全部改为变量引用；grep 确认 pages 下已无裸 hex/rgba
+- 剩余：真机完整流程走查由用户执行（最后一项）

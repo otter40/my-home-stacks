@@ -45,14 +45,14 @@
   font-size: 20rpx;
   padding: 2rpx 12rpx;
   border-radius: 16rpx;
-  color: #fff;
+  color: var(--color-white);
 }
 .exp--expired {
   background: var(--color-red);
 }
 .exp--soon {
   background: var(--color-yellow);
-  color: #7a5a00;
+  color: var(--color-warn-text-strong);
 }
 
 /* 数量加减 */
@@ -72,7 +72,7 @@
 }
 .step--plus {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
 }
 .step__num {
   min-width: 56rpx;
@@ -127,10 +127,10 @@
   height: 96rpx;
   border-radius: 50%;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   font-size: 56rpx;
   line-height: 96rpx;
   text-align: center;
-  box-shadow: 0 4rpx 16rpx rgba(244, 132, 95, 0.5);
+  box-shadow: var(--shadow-fab);
   z-index: 10;
 }

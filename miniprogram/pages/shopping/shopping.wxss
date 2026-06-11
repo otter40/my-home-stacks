@@ -30,7 +30,7 @@
 .addbar__btn {
   flex: none;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   padding: 16rpx 24rpx;
   border-radius: 8rpx;
   font-size: 28rpx;
@@ -81,7 +81,7 @@
 .buy-btn {
   margin: 0;
   background: var(--color-green);
-  color: #fff;
+  color: var(--color-white);
   border-radius: 32rpx;
   font-size: 26rpx;
 }

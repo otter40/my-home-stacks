@@ -10,8 +10,12 @@ page {
   --color-text: #2D2D2D;         /* 主文字色 */
   --color-text-secondary: #888888; /* 辅助文字色 */
   --color-border: #EEE8E0;       /* 边框色 */
+  --color-white: #FFFFFF;        /* 纯白（彩色底上的文字/卡片）*/
+  --color-warn-text: #C98A00;    /* 警告琥珀文字（浅底上）*/
+  --color-warn-text-strong: #7A5A00; /* 警告琥珀文字（黄色标签上）*/
   --radius-card: 12px;
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-fab: 0 4rpx 16rpx rgba(244, 132, 95, 0.5); /* 悬浮按钮阴影 */
 
   background-color: var(--color-bg);
   color: var(--color-text);

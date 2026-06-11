@@ -81,7 +81,7 @@
 .save-btn {
   margin: 40rpx 24rpx 0;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   border-radius: 44rpx;
   font-size: 32rpx;
 }
