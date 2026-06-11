@@ -71,9 +71,17 @@ Page({
     const id = e.currentTarget.dataset.id as string;
     const recipe = getRecipes().find((r) => r.id === id);
     if (!recipe) return;
-    cookDone(recipe);
-    this.refresh();
-    wx.showToast({ title: '完成啦 🎉，已扣库存', icon: 'none' });
+    wx.showModal({
+      title: '做完了',
+      content: `将按「${recipe.name}」的用量从库存扣减对应食材，确定吗？`,
+      confirmText: '确定',
+      success: (res) => {
+        if (!res.confirm) return;
+        cookDone(recipe);
+        this.refresh();
+        wx.showToast({ title: '完成啦 🎉，已扣库存', icon: 'none' });
+      },
+    });
   },
 
   onRemoveToday(e: WechatMiniprogram.TouchEvent) {

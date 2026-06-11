@@ -126,13 +126,20 @@ Page({
   onExpiryChange(e: WechatMiniprogram.PickerChange) {
     this.setData({ expiry: e.detail.value as string });
   },
+  onExpiryInput(e: WechatMiniprogram.Input) {
+    this.setData({ expiry: e.detail.value.trim() });
+  },
   onClearExpiry() {
     this.setData({ expiry: '' });
   },
 
-  onStatusChange(e: WechatMiniprogram.CheckboxGroupChange) {
-    // checkbox-group 直接给出全部选中值，作为 source of truth
-    this.setData({ selectedStatuses: e.detail.value });
+  onToggleStatus(e: WechatMiniprogram.TouchEvent) {
+    const s = e.currentTarget.dataset.status as string;
+    const selected = this.data.selectedStatuses.slice();
+    const i = selected.indexOf(s);
+    if (i === -1) selected.push(s);
+    else selected.splice(i, 1);
+    this.buildStatusOptions(selected);
   },
 
   onSave() {

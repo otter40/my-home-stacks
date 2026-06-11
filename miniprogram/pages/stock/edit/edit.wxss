@@ -24,16 +24,17 @@
 }
 .picker-value { font-size: 30rpx; color: var(--color-text); }
 
-.status-group { display: flex; flex-wrap: wrap; }
-.status-label {
-  display: inline-flex;
-  align-items: center;
+.status-list { display: flex; flex-wrap: wrap; }
+.status-row {
   width: 50%;
-  padding: 10rpx 0;
-  font-size: 26rpx;
+  padding: 14rpx 0;
+  font-size: 28rpx;
+  color: var(--color-text);
 }
-.status-label__text { margin-left: 4rpx; }
-.status-label checkbox { transform: scale(0.8); }
+.status-row--on { color: var(--color-accent); font-weight: 600; }
+
+.expiry-input { flex: 1; }
+.muted { color: var(--color-text-secondary); }
 
 .save-btn {
   margin: 40rpx 24rpx 0;

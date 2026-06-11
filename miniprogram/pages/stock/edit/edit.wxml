@@ -4,9 +4,10 @@
   <view class="field">
     <text class="field__label">食材</text>
     <view class="field__row">
-      <picker mode="selector" range="{{ingredientNames}}" value="{{ingredientIndex}}" bindchange="onPickIngredient">
+      <picker wx:if="{{ingredientNames.length > 0}}" mode="selector" range="{{ingredientNames}}" value="{{ingredientIndex}}" bindchange="onPickIngredient">
         <view class="picker-value">{{ingredientIndex >= 0 ? ingredientNames[ingredientIndex] : '请选择食材'}} ▾</view>
       </picker>
+      <view wx:else class="picker-value muted">食材库为空，请先新建</view>
       <text class="tlink" bindtap="onNewIngredient">＋ 新建食材</text>
     </view>
   </view>
@@ -36,10 +37,11 @@
 
   <!-- 保质期 -->
   <view class="field">
-    <text class="field__label">保质期（可选）</text>
+    <text class="field__label">保质期（可选，可选择或手动输入）</text>
     <view class="field__row">
+      <input class="field__input expiry-input" placeholder="YYYY-MM-DD" value="{{expiry}}" bindinput="onExpiryInput" />
       <picker mode="date" value="{{expiry}}" bindchange="onExpiryChange">
-        <view class="picker-value">{{expiry || '点击选择到期日'}} ▾</view>
+        <text class="tlink">📅 选择</text>
       </picker>
       <text wx:if="{{expiry}}" class="tlink tlink--danger" bindtap="onClearExpiry">清除</text>
     </view>
@@ -48,12 +50,15 @@
   <!-- 状态多选 -->
   <view class="field">
     <text class="field__label">状态（可多选）</text>
-    <checkbox-group class="status-group" bindchange="onStatusChange">
-      <label wx:for="{{statusOptions}}" wx:key="name" class="status-label">
-        <checkbox value="{{item.name}}" checked="{{item.on}}" color="#2383E2" />
-        <text class="status-label__text">{{item.name}}</text>
-      </label>
-    </checkbox-group>
+    <view class="status-list">
+      <view
+        wx:for="{{statusOptions}}"
+        wx:key="name"
+        class="status-row {{item.on ? 'status-row--on' : ''}}"
+        data-status="{{item.name}}"
+        bindtap="onToggleStatus"
+      >{{item.on ? '☑' : '☐'}} {{item.name}}</view>
+    </view>
   </view>
 
   <button class="save-btn" bindtap="onSave">保存</button>
