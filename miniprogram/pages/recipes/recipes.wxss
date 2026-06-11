@@ -1,4 +1,118 @@
 /* pages/recipes/recipes.wxss */
 .page {
   min-height: 100vh;
+  padding-bottom: 160rpx;
+}
+
+/* 搜索栏 */
+.searchbar {
+  display: flex;
+  align-items: center;
+  background: var(--color-card);
+  margin: 16rpx 24rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 40rpx;
+  box-shadow: var(--shadow-card);
+}
+.searchbar__icon {
+  font-size: 30rpx;
+  margin-right: 12rpx;
+}
+.searchbar__input {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+/* 分类 Tab */
+.cats {
+  white-space: nowrap;
+  margin: 8rpx 0 8rpx;
+}
+.cats__inner {
+  display: inline-flex;
+  padding: 8rpx 24rpx;
+  gap: 16rpx;
+}
+.cats__item {
+  flex: none;
+  padding: 12rpx 28rpx;
+  border-radius: 32rpx;
+  background: var(--color-card);
+  color: var(--color-text-secondary);
+  font-size: 26rpx;
+  border: 1rpx solid var(--color-border);
+}
+.cats__item--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* 菜谱卡片 */
+.recipe__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.recipe__name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.tag {
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+.recipe__ings {
+  margin-top: 12rpx;
+  color: var(--color-text-secondary);
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+.recipe__today {
+  margin-top: 10rpx;
+  color: var(--color-green);
+  font-size: 24rpx;
+}
+.recipe__actions {
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+}
+
+/* 通用按钮 */
+.btn {
+  margin: 0;
+  font-size: 26rpx;
+  line-height: 2.2;
+  border-radius: 32rpx;
+}
+.btn--ghost {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1rpx solid var(--color-border);
+}
+.btn--danger {
+  background: #fff;
+  color: var(--color-red);
+  border: 1rpx solid var(--color-red);
+}
+
+/* 悬浮新增按钮 */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 60rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 56rpx;
+  line-height: 96rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(244, 132, 95, 0.5);
+  z-index: 10;
 }

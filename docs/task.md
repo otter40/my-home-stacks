@@ -14,16 +14,16 @@
 
 ## Phase 2 — 业务逻辑层
 
-- [ ] 创建 `utils/recipe.ts`：实现 `getCategories()`、`addCategory()`、`matchIngredients()`
-- [ ] 创建 `utils/inventory.ts`：实现 `getLocations()`、`addLocation()`、`getExpiryStatus()`、`adjustQty()`
-- [ ] 创建 `utils/shopping.ts`：实现 `getAutoItems()`（自动汇总逻辑，含去重）、`markAsPurchased()`（已购买逻辑，更新或新建库存）
+- [X] 创建 `utils/recipe.ts`：实现 `getCategories()`、`addCategory()`、`matchIngredients()`
+- [X] 创建 `utils/inventory.ts`：实现 `getLocations()`、`addLocation()`、`getExpiryStatus()`、`adjustQty()`
+- [X] 创建 `utils/shopping.ts`：实现 `getAutoItems()`（自动汇总逻辑，含去重）、`markAsPurchased()`（已购买逻辑，更新或新建库存）
 
 ## Phase 3 — 菜谱库页面
 
-- [ ] `pages/recipes/recipes`：列表展示所有菜谱，支持按分类筛选（Tab 切换）和按菜名搜索
-- [ ] `pages/recipes/edit`：新增 / 编辑菜谱表单，含菜名、分类选择（支持新增自定义分类）、食材动态列表（增删行）、做法文本域
-- [ ] 菜谱卡片：显示菜名、分类标签（带颜色）、食材简要列表
-- [ ] 删除菜谱：二次确认（`wx.showModal`）后删除
+- [X] `pages/recipes/recipes`：列表展示所有菜谱，支持按分类筛选（Tab 切换）和按菜名搜索
+- [X] `pages/recipes/edit`：新增 / 编辑菜谱表单，含菜名、分类选择（支持新增自定义分类）、食材动态列表（增删行）、做法文本域
+- [X] 菜谱卡片：显示菜名、分类标签（带颜色）、食材简要列表
+- [X] 删除菜谱：二次确认（`wx.showModal`）后删除
 
 ## Phase 4 — 库存页面
 
@@ -80,3 +80,34 @@
 - 待验证（需在微信开发者工具中执行，本地无 tsc 环境）
   - 导入项目后能正常编译启动、TabBar 5 个 tab 正常显示
   - 首次启动后 Storage 面板中可见 recipes(5) / inventory(8) / initialized=true
+- 验证结果：✅ 用户确认项目能正常编译启动、TabBar 正常（Storage 面板因网页版 DevTools 未能查看，跳过，留待 Phase 3/4 页面自然验证 seed 数据）
+
+### 2026-06-12: Phase 2 业务逻辑层完成 ✅
+- 实现文件
+  - `miniprogram/utils/recipe.ts` — `DEFAULT_CATEGORIES`、`normalizeName()`（去空格+小写归一）、`getCategories()`、`addCategory()`、`matchIngredients()`、`calcFridgeStatus()`
+  - `miniprogram/utils/inventory.ts` — `DEFAULT_LOCATIONS`、`UNCLASSIFIED_LOCATION`、`getLocations()`、`addLocation()`、`getExpiryStatus()`、`adjustQty()`
+  - `miniprogram/utils/shopping.ts` — `AutoShoppingItem` 类型、`getAutoItems()`（双来源去重合并）、`markAsPurchased()`（已购买更新/新建库存）
+  - `miniprogram/types/index.ts` — 新增 `IngredientMatch`、`FridgeResult` 类型
+- 设计上的要点
+  - 食材匹配统一走 `normalizeName()`（trim + toLowerCase），recipe / shopping 共用，保证全局匹配规则一致
+  - 冰箱状态：缺 0 项=ok / 缺 1–2 项=almost / 缺 ≥3 项=no（与 architecture §6 一致），同时返回 `matches` 逐项明细供页面渲染
+  - 保质期解析用 `` `${expiry}T00:00:00` `` 强制按本地时区零点，避免 'YYYY-MM-DD' 被当成 UTC 产生差一天误差；3 天内（含今天）= soon，已过期 = expired
+  - `adjustQty` / `markAsPurchased` 均「读→改→整体写回」并返回最新数组，便于页面直接刷新
+  - 购物袋自动汇总：① 今天吃菜谱缺料 ② 库存 needBuy=true，按归一化名称去重合并并记录 `sources`；自动项无需手动删除——库存更新后会自然从汇总中消失
+  - `markAsPurchased` 只负责库存更新，购物袋移除由调用方处理（手动项删存储 / 自动项随库存刷新消失），职责清晰
+- 说明：本阶段为纯逻辑层、无界面，函数将在 Phase 3–7 各页面接入并自然验证
+
+### 2026-06-12: Phase 3 菜谱库页面完成 ✅
+- 实现文件
+  - `pages/recipes/recipes.{ts,wxml,wxss}` — 列表页：搜索栏（按菜名 includes 匹配）+ 横向滚动分类 Tab（含「全部」）+ 菜谱卡片 + 悬浮新增 FAB + 空状态
+  - `pages/recipes/edit/edit.{ts,wxml,wxss}` — 新增/编辑表单：菜名 / 分类 picker（含「＋新增分类」走 wx.showModal editable）/ 食材动态行（名称·数量·单位，可增删）/ 做法 textarea（auto-height）
+  - `utils/recipe.ts` — 新增 `CATEGORY_COLORS` 与 `categoryColor()` 供分类标签着色
+- 设计上的要点
+  - 列表页 `onShow` 重新读取数据并按当前筛选/搜索重建，保证从编辑页返回或 TabBar 切换后同步
+  - 编辑页通过 `onLoad(options.id)` 区分新增/编辑，并用 `wx.setNavigationBarTitle` 动态改标题
+  - 食材行编辑用 setData 路径 `ingredients[i].xxx` 局部更新；保存时过滤掉名称为空的行，数量统一 `Number() || 0`
+  - 删除走 `wx.showModal`（confirmText=删除、confirmColor 红）二次确认后整体覆盖写回
+  - 分类标签颜色与 app.wxss 调色板对齐，自定义分类灰色兜底
+- 待验证（微信开发者工具/真机）
+  - 菜谱库应显示 seed 的 5 条菜谱；分类 Tab、搜索、新增（含新增分类）、编辑、删除二次确认均正常
+  - 新增/编辑保存后返回列表数据即时刷新

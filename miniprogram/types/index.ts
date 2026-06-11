@@ -56,3 +56,19 @@ export type FridgeStatus = 'ok' | 'almost' | 'no';
 
 /** 保质期状态 */
 export type ExpiryStatus = 'expired' | 'soon' | 'ok';
+
+/** 单个食材在库存中的匹配结果 */
+export interface IngredientMatch {
+  name: string;
+  qty: number;     // 菜谱所需数量
+  unit: string;
+  available: boolean; // 库存中存在且 qty > 0
+  haveQty: number;    // 库存现有数量（0 表示没有）
+}
+
+/** 菜谱在当前库存下的可做状态结果 */
+export interface FridgeResult {
+  status: FridgeStatus;
+  missing: string[];           // 缺少的食材名称列表
+  matches: IngredientMatch[];  // 每个食材的逐项匹配
+}
