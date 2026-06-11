@@ -1,7 +1,58 @@
-<!-- pages/inventory/inventory.wxml — Phase 1 空壳 -->
+<!-- pages/inventory/inventory.wxml — 库存 -->
 <view class="page">
-  <view class="empty">
-    <view class="empty__emoji">🧊</view>
-    <view class="empty__hint">库存 · 页面建设中</view>
+  <view wx:if="{{!isEmpty}}" class="list">
+    <view wx:for="{{groups}}" wx:key="location" class="group">
+      <!-- 分组头（可折叠） -->
+      <view class="group__head" data-loc="{{item.location}}" bindtap="onToggleCollapse">
+        <text class="group__title">{{item.location}}</text>
+        <text class="group__count">{{item.items.length}}</text>
+        <text class="group__arrow">{{item.collapsed ? '▸' : '▾'}}</text>
+      </view>
+
+      <!-- 分组内食材 -->
+      <view wx:if="{{!item.collapsed}}">
+        <view wx:for="{{item.items}}" wx:for-item="it" wx:key="id" class="card inv">
+          <view class="inv__main">
+            <view class="inv__title">
+              <text class="inv__name">{{it.name}}</text>
+              <text
+                wx:if="{{it.expiryLabel}}"
+                class="exp exp--{{it.expiryStatus}}"
+              >{{it.expiryLabel}}</text>
+            </view>
+            <view class="inv__qty">
+              <view class="step step--minus" data-id="{{it.id}}" catchtap="onDec">－</view>
+              <text class="step__num">{{it.qty}}</text>
+              <view class="step step--plus" data-id="{{it.id}}" catchtap="onInc">＋</view>
+              <text class="inv__unit">{{it.unit}}</text>
+            </view>
+          </view>
+
+          <view class="inv__foot">
+            <view class="inv__needbuy">
+              <text class="inv__needbuy-label">需要购买</text>
+              <switch
+                checked="{{it.needBuy}}"
+                color="#F4845F"
+                data-id="{{it.id}}"
+                bindchange="onToggleNeedBuy"
+              />
+            </view>
+            <view class="inv__actions">
+              <text class="link" data-id="{{it.id}}" bindtap="onEdit">编辑</text>
+              <text class="link link--danger" data-id="{{it.id}}" bindtap="onDelete">删除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty">
+    <view class="empty__emoji">🧊</view>
+    <view class="empty__hint">库存空空如也，点右下角 + 添加食材吧</view>
+  </view>
+
+  <view class="fab" bindtap="onAdd">＋</view>
 </view>

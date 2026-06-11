@@ -1,4 +1,54 @@
 /* pages/inventory/edit/edit.wxss */
 .page {
   min-height: 100vh;
+  padding: 16rpx 0 60rpx;
+}
+
+.field {
+  background: var(--color-card);
+  margin: 16rpx 24rpx;
+  padding: 24rpx;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.field__label {
+  display: block;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  margin-bottom: 16rpx;
+}
+.field__input {
+  width: 100%;
+  font-size: 30rpx;
+}
+.field--row2 {
+  display: flex;
+  gap: 24rpx;
+}
+.field--row2 .col {
+  flex: 1;
+}
+.field__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picker-value {
+  font-size: 30rpx;
+  color: var(--color-text);
+}
+.link {
+  color: var(--color-primary);
+  font-size: 26rpx;
+}
+.link--danger {
+  color: var(--color-red);
+}
+
+.save-btn {
+  margin: 40rpx 24rpx 0;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 44rpx;
+  font-size: 32rpx;
 }

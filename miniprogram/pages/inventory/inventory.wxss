@@ -1,4 +1,136 @@
 /* pages/inventory/inventory.wxss */
 .page {
   min-height: 100vh;
+  padding: 8rpx 0 160rpx;
+}
+
+/* 分组 */
+.group__head {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx 8rpx;
+}
+.group__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.group__count {
+  margin-left: 12rpx;
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+}
+.group__arrow {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  font-size: 28rpx;
+}
+
+/* 食材卡片 */
+.inv__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.inv__title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.inv__name {
+  font-size: 30rpx;
+  font-weight: 500;
+}
+.exp {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 16rpx;
+  color: #fff;
+}
+.exp--expired {
+  background: var(--color-red);
+}
+.exp--soon {
+  background: var(--color-yellow);
+  color: #7a5a00;
+}
+
+/* 数量加减 */
+.inv__qty {
+  display: flex;
+  align-items: center;
+}
+.step {
+  width: 52rpx;
+  height: 52rpx;
+  line-height: 52rpx;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 36rpx;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.step--plus {
+  background: var(--color-primary);
+  color: #fff;
+}
+.step__num {
+  min-width: 56rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+.inv__unit {
+  margin-left: 8rpx;
+  color: var(--color-text-secondary);
+  font-size: 24rpx;
+}
+
+/* 底部操作 */
+.inv__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+.inv__needbuy {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.inv__needbuy-label {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+}
+.inv__needbuy switch {
+  transform: scale(0.7);
+}
+.inv__actions {
+  display: flex;
+  gap: 28rpx;
+}
+.link {
+  color: var(--color-primary);
+  font-size: 26rpx;
+}
+.link--danger {
+  color: var(--color-red);
+}
+
+/* 悬浮新增按钮 */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 60rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 56rpx;
+  line-height: 96rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(244, 132, 95, 0.5);
+  z-index: 10;
 }

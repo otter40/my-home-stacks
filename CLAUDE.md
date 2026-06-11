@@ -69,4 +69,4 @@ miniprogram/
 
 ## 对话结束需要确认
 
-需在微信开发者工具中确认时，请给出总结了这次修改的commit信息（遵循 Conventional Commits 风格），和需要确认内容的checklist。
+每次需在微信开发者工具中确认时，请给出总结了这次修改的commit信息（遵循 Conventional Commits 风格），和需要确认内容的checklist。
