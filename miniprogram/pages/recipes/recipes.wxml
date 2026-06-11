@@ -1,0 +1,7 @@
+<!-- pages/recipes/recipes.wxml — Phase 1 空壳 -->
+<view class="page">
+  <view class="empty">
+    <view class="empty__emoji">📖</view>
+    <view class="empty__hint">菜谱库 · 页面建设中</view>
+  </view>
+</view>

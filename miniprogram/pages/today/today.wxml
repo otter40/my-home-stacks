@@ -1,0 +1,7 @@
+<!-- pages/today/today.wxml — Phase 1 空壳 -->
+<view class="page">
+  <view class="empty">
+    <view class="empty__emoji">🍽️</view>
+    <view class="empty__hint">今天吃 · 页面建设中</view>
+  </view>
+</view>

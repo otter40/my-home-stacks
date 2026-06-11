@@ -1,0 +1,4 @@
+/* pages/today/today.wxss */
+.page {
+  min-height: 100vh;
+}

@@ -1,0 +1,4 @@
+/* pages/inventory/edit/edit.wxss */
+.page {
+  min-height: 100vh;
+}

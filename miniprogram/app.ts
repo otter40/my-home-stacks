@@ -1,18 +1,15 @@
-// app.ts
+// app.ts — 小程序入口
+import { isInitialized, setInitialized, saveRecipes, saveInventory } from './utils/storage';
+import { seedRecipes, seedInventory } from './utils/seed';
+
 App<IAppOption>({
   globalData: {},
   onLaunch() {
-    // 展示本地存储能力
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
-    // 登录
-    wx.login({
-      success: res => {
-        console.log(res.code)
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      },
-    })
+    // 首次启动检测：本地无数据时写入 seed 示例数据
+    if (!isInitialized()) {
+      saveRecipes(seedRecipes());
+      saveInventory(seedInventory());
+      setInitialized(true);
+    }
   },
-})
+});

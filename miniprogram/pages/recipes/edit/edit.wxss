@@ -1,0 +1,4 @@
+/* pages/recipes/edit/edit.wxss */
+.page {
+  min-height: 100vh;
+}

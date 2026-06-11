@@ -1,0 +1,4 @@
+/* pages/shopping/shopping.wxss */
+.page {
+  min-height: 100vh;
+}

@@ -1,0 +1,4 @@
+/* pages/fridge/fridge.wxss */
+.page {
+  min-height: 100vh;
+}

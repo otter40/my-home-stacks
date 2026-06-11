@@ -1,12 +1,31 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/today/today",
+    "pages/fridge/fridge",
+    "pages/recipes/recipes",
+    "pages/recipes/edit/edit",
+    "pages/inventory/inventory",
+    "pages/inventory/edit/edit",
+    "pages/shopping/shopping"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarTitleText": "王家今天吃什么",
+    "navigationBarBackgroundColor": "#FBF8F3",
+    "backgroundColor": "#FBF8F3"
+  },
+  "tabBar": {
+    "color": "#888888",
+    "selectedColor": "#F4845F",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/today/today", "text": "🍽️ 今天吃" },
+      { "pagePath": "pages/fridge/fridge", "text": "❄️ 冰箱" },
+      { "pagePath": "pages/recipes/recipes", "text": "📖 菜谱" },
+      { "pagePath": "pages/inventory/inventory", "text": "🧊 库存" },
+      { "pagePath": "pages/shopping/shopping", "text": "🛒 购物袋" }
+    ]
   },
   "style": "v2",
   "componentFramework": "glass-easel",
