@@ -39,13 +39,14 @@
 
 ## Phase F — 食材页
 
-- [ ] `pages/ingredients/ingredients`：按食材分类分组罗列；点击查看库存合计 + 反向关联菜谱
-- [ ] `pages/ingredients/edit`：名称、分类(支持新增)、默认单位；删除二次确认（含引用提示）
+- [X] `pages/ingredients/ingredients`：按食材分类分组罗列；点击展开查看库存合计 + 反向关联菜谱
+- [X] `pages/ingredients/edit`：名称、分类(支持新增)、默认单位；删除二次确认（含引用拦截提示）
 
 ## Phase G — 购物袋子页 + 我的页
 
-- [ ] `pages/shopping/shopping`：自动汇总 + 手动添加 + 已购买入库 + 删除（从首页入口进入）
-- [ ] `pages/profile/profile`：数据导出/导入、分类标签管理、清空/重置、使用统计
+- [X] `pages/shopping/shopping`：自动汇总 + 手动添加 + 已购买入库 + 删除（从首页入口进入）
+- [X] `pages/profile/profile`：使用统计、数据导出/导入(剪贴板)、分类标签管理入口、清空/恢复示例
+- [X] `pages/options/options`：分类/标签管理（5 组自定义选项增删）
 
 ## Phase H — 整体打磨
 
@@ -101,6 +102,17 @@
 - 首页冰箱建议：从内联列表改为「摘要卡 + 入口」（可以做 N 道 · 差一点点 M 道 → 去看看 ›），与购物袋一致
 - 新增子页面 `pages/suggest/suggest`：完整「可以做 / 差一点点」列表 + 加入想吃（从首页摘要进入），app.json 注册
 - 首页 home 改为只算 canMakeCount/almostCount，移除内联 onAddToday
+
+### 2026-06-12: 状态多选三修 + Phase F 食材页 + Phase G 购物袋/我的 ✅
+- 状态多选第三次修：彻底改用原生 `checkbox-group` + `checkbox`（多选标准做法），onStatusChange 直接取 e.detail.value 作为选中集合，最稳
+- Phase F
+  - `pages/ingredients/ingredients`：按食材分类分组罗列，点击展开显示「库存合计 + 用于哪些菜谱（反向关联）」+ 编辑/删除；删除前探测引用（被库存/菜谱用到则拦截提示）
+  - `pages/ingredients/edit`：名称 / 分类 picker（可新增）/ 默认单位
+- Phase G
+  - `pages/shopping/shopping`（子页）：手动添加 + 自动汇总（标注来源）+ 已买入库（markAsPurchased，关联/新建食材）+ 删除二次确认
+  - `pages/profile/profile`：使用统计（累计/近7天/高频菜）+ 导出到剪贴板/从剪贴板导入（校验 schemaVersion）+ 恢复示例 + 清空全部 + 分类管理入口
+  - `pages/options/options`：5 组选项（菜谱类型/菜系/食材分类/位置/状态）默认不可删、自定义可增删
+- 待验证：食材页分类罗列与反向关联、食材增删（引用拦截）；购物袋全流程；我的页统计/导入导出/重置清空/分类管理
 
 ## Done（历史）
 

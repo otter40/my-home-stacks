@@ -1,5 +1,34 @@
-<!-- pages/ingredients/ingredients.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">🥕</view>
-  <view class="empty__hint">食材 · 建设中（Phase F）</view>
+<!-- pages/ingredients/ingredients.wxml — 食材库 -->
+<view class="page">
+  <view wx:if="{{!isEmpty}}">
+    <view wx:for="{{groups}}" wx:key="category" class="group">
+      <view class="section-title">{{item.category}}（{{item.items.length}}）</view>
+      <view wx:for="{{item.items}}" wx:for-item="ing" wx:key="id" class="card ing">
+        <view class="ing__row" data-id="{{ing.id}}" bindtap="onToggle">
+          <text class="ing__name">{{ing.name}}</text>
+          <view class="ing__right">
+            <text class="chip {{ing.stockTotal > 0 ? 'chip--green' : ''}}">库存 {{ing.stockTotal}}{{ing.defaultUnit}}</text>
+            <text class="ing__arrow">{{expandedId === ing.id ? '▾' : '▸'}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{expandedId === ing.id}}" class="ing__detail">
+          <view class="ing__detail-line">
+            用于菜谱：<text wx:if="{{ing.recipeText}}">{{ing.recipeText}}</text><text wx:else class="muted">暂无</text>
+          </view>
+          <view class="ing__actions">
+            <text class="tlink" data-id="{{ing.id}}" bindtap="onEdit">编辑</text>
+            <text class="tlink tlink--danger" data-id="{{ing.id}}" bindtap="onDelete">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">
+    <view class="empty__emoji">🥕</view>
+    <view class="empty__hint">食材库是空的，点右下角 + 添加吧</view>
+  </view>
+
+  <view class="fab" bindtap="onAdd">＋</view>
 </view>

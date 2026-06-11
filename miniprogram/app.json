@@ -9,7 +9,8 @@
     "pages/ingredients/edit/edit",
     "pages/suggest/suggest",
     "pages/shopping/shopping",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/options/options"
   ],
   "window": {
     "navigationBarTextStyle": "black",

@@ -1,1 +1,31 @@
 /* pages/ingredients/edit/edit.wxss */
+.page { min-height: 100vh; padding: 16rpx 0 60rpx; }
+
+.field {
+  background: var(--color-card);
+  border: 1rpx solid var(--color-border);
+  margin: 16rpx 24rpx;
+  padding: 24rpx;
+  border-radius: var(--radius-card);
+}
+.field__label {
+  display: block;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  margin-bottom: 16rpx;
+}
+.field__input { width: 100%; font-size: 30rpx; }
+.field__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picker-value { font-size: 30rpx; color: var(--color-text); }
+
+.save-btn {
+  margin: 40rpx 24rpx 0;
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-radius: var(--radius-card);
+  font-size: 32rpx;
+}

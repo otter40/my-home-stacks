@@ -1,1 +1,38 @@
 /* pages/profile/profile.wxss */
+.page { min-height: 100vh; padding-bottom: 60rpx; }
+.muted { color: var(--color-text-secondary); font-size: 26rpx; }
+
+/* 统计 */
+.stats__row { display: flex; }
+.stats__cell { flex: 1; text-align: center; padding: 12rpx 0; }
+.stats__num { font-size: 48rpx; font-weight: 700; color: var(--color-text); }
+.stats__label { margin-top: 4rpx; font-size: 24rpx; color: var(--color-text-secondary); }
+.stats__top { margin-top: 20rpx; padding-top: 20rpx; border-top: 1rpx solid var(--color-border); }
+.stats__top-title { font-size: 26rpx; color: var(--color-text-secondary); margin-bottom: 12rpx; }
+.stats__top-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 28rpx;
+  padding: 8rpx 0;
+}
+
+/* 列表行 */
+.list { padding: 0; }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+  font-size: 30rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+.row:last-child { border-bottom: none; }
+.row__arrow { color: var(--color-text-secondary); }
+.row--danger { color: var(--color-red); }
+
+.footer {
+  margin-top: 40rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+}

@@ -48,15 +48,12 @@
   <!-- 状态多选 -->
   <view class="field">
     <text class="field__label">状态（可多选）</text>
-    <view class="status-wrap">
-      <view
-        wx:for="{{statusOptions}}"
-        wx:key="name"
-        class="status-chip {{item.on ? 'status-chip--on' : ''}}"
-        data-status="{{item.name}}"
-        bindtap="onToggleStatus"
-      >{{item.on ? '✓ ' : ''}}{{item.name}}</view>
-    </view>
+    <checkbox-group class="status-group" bindchange="onStatusChange">
+      <label wx:for="{{statusOptions}}" wx:key="name" class="status-label">
+        <checkbox value="{{item.name}}" checked="{{item.on}}" color="#2383E2" />
+        <text class="status-label__text">{{item.name}}</text>
+      </label>
+    </checkbox-group>
   </view>
 
   <button class="save-btn" bindtap="onSave">保存</button>

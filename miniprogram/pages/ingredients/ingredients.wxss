@@ -1,1 +1,25 @@
 /* pages/ingredients/ingredients.wxss */
+.page { min-height: 100vh; padding-bottom: 160rpx; }
+
+.ing__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ing__name { font-size: 30rpx; font-weight: 500; }
+.ing__right { display: flex; align-items: center; gap: 12rpx; }
+.ing__arrow { color: var(--color-text-secondary); font-size: 26rpx; }
+
+.ing__detail {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+.ing__detail-line { font-size: 26rpx; color: var(--color-text-secondary); line-height: 1.6; }
+.muted { color: var(--color-text-secondary); }
+.ing__actions {
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: flex-end;
+  gap: 28rpx;
+}

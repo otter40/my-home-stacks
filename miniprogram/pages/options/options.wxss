@@ -1,0 +1,37 @@
+/* pages/options/options.wxss */
+.page { min-height: 100vh; padding-bottom: 60rpx; }
+
+.group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 24rpx;
+}
+.group__head .section-title { padding-right: 0; }
+
+.chip-box { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.opt {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: var(--color-chip-bg);
+  color: var(--color-text);
+  font-size: 24rpx;
+}
+.opt--custom {
+  background: rgba(35, 131, 226, 0.10);
+  color: var(--color-accent);
+}
+.opt__del {
+  margin-left: 12rpx;
+  color: var(--color-accent);
+  font-size: 22rpx;
+}
+
+.footer {
+  margin-top: 32rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+}

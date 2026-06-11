@@ -1,0 +1,24 @@
+<!-- pages/options/options.wxml — 分类/标签管理 -->
+<view class="page">
+  <view wx:for="{{groups}}" wx:key="key" class="group">
+    <view class="group__head">
+      <text class="section-title">{{item.title}}</text>
+      <text class="tlink" data-key="{{item.key}}" bindtap="onAdd">＋ 新增</text>
+    </view>
+    <view class="card chip-box">
+      <block wx:for="{{item.items}}" wx:for-item="opt" wx:key="name">
+        <view class="opt {{opt.custom ? 'opt--custom' : ''}}">
+          <text>{{opt.name}}</text>
+          <text
+            wx:if="{{opt.custom}}"
+            class="opt__del"
+            data-key="{{item.key}}"
+            data-name="{{opt.name}}"
+            catchtap="onRemove"
+          >✕</text>
+        </view>
+      </block>
+    </view>
+  </view>
+  <view class="footer">默认选项不可删除；自定义选项删除后不影响已有记录</view>
+</view>

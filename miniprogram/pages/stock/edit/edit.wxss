@@ -24,21 +24,16 @@
 }
 .picker-value { font-size: 30rpx; color: var(--color-text); }
 
-.status-wrap { display: flex; flex-wrap: wrap; }
-.status-chip {
-  border: 1rpx solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-text-secondary);
-  font-size: 24rpx;
-  padding: 10rpx 22rpx;
-  margin: 6rpx 12rpx 6rpx 0;
-  border-radius: 999rpx;
+.status-group { display: flex; flex-wrap: wrap; }
+.status-label {
+  display: inline-flex;
+  align-items: center;
+  width: 50%;
+  padding: 10rpx 0;
+  font-size: 26rpx;
 }
-.status-chip--on {
-  background: var(--color-accent);
-  color: var(--color-white);
-  border-color: var(--color-accent);
-}
+.status-label__text { margin-left: 4rpx; }
+.status-label checkbox { transform: scale(0.8); }
 
 .save-btn {
   margin: 40rpx 24rpx 0;
