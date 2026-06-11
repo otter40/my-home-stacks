@@ -1,1 +1,114 @@
 /* pages/home/home.wxss */
+.page {
+  min-height: 100vh;
+  padding-bottom: 60rpx;
+}
+
+/* 欢迎条 */
+.welcome {
+  padding: 40rpx 32rpx 16rpx;
+}
+.welcome__title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.welcome__date {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+.welcome__tip {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: var(--color-text);
+}
+
+/* 菜卡片 */
+.dish__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.dish__name {
+  font-size: 32rpx;
+  font-weight: 600;
+  flex: none;
+  margin-right: 16rpx;
+}
+.dish__tags {
+  flex: 1;
+  text-align: right;
+}
+.dish__main {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+.dish__missing {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #946A12;
+}
+.dish__foot {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28rpx;
+}
+
+/* mini 按钮 */
+.mini-btn {
+  margin: 0;
+  font-size: 24rpx;
+  line-height: 2.2;
+  border-radius: 6rpx;
+  background: var(--color-chip-bg);
+  color: var(--color-text-secondary);
+}
+.mini-btn--green { background: var(--color-green); color: var(--color-white); }
+.mini-btn--accent { background: var(--color-accent); color: var(--color-white); }
+
+/* 提示行 */
+.hint-line {
+  margin: 8rpx 32rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+/* 购物袋摘要 */
+.bag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bag__left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.bag__emoji {
+  font-size: 44rpx;
+  margin-right: 20rpx;
+}
+.bag__info { flex: 1; min-width: 0; }
+.bag__count {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.bag__preview {
+  margin-top: 4rpx;
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.bag__arrow {
+  flex: none;
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  color: var(--color-accent);
+}

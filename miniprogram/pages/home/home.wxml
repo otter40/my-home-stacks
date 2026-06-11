@@ -1,5 +1,76 @@
-<!-- pages/home/home.wxml — Phase B 骨架 -->
-<view class="empty">
-  <view class="empty__emoji">🏠</view>
-  <view class="empty__hint">首页 · 建设中（Phase C）</view>
+<!-- pages/home/home.wxml — 首页 -->
+<view class="page">
+  <!-- 欢迎条 -->
+  <view class="welcome">
+    <view class="welcome__title">王家今天吃什么</view>
+    <view class="welcome__date">{{dateText}}</view>
+    <view class="welcome__tip">今天想做点什么好吃的？👩‍🍳</view>
+  </view>
+
+  <!-- 今天想吃 -->
+  <view class="section-title">今天想吃</view>
+  <block wx:if="{{todayList.length > 0}}">
+    <view wx:for="{{todayList}}" wx:key="id" class="card dish">
+      <view class="dish__head">
+        <text class="dish__name">{{item.name}}</text>
+        <view class="dish__tags">
+          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
+          <text class="chip chip--accent">{{item.prep}}</text>
+        </view>
+      </view>
+      <view class="dish__main">主料：{{item.mainText}}</view>
+      <view class="dish__foot">
+        <text class="tlink" data-id="{{item.id}}" bindtap="onRemoveToday">移出</text>
+        <button class="mini-btn mini-btn--green" size="mini" data-id="{{item.id}}" bindtap="onDone">✅ 做完了</button>
+      </view>
+    </view>
+  </block>
+  <view wx:else class="hint-line">还没选今天想吃的，看看下面冰箱能做什么 👇</view>
+
+  <!-- 冰箱建议 -->
+  <view class="section-title">冰箱建议 · 可以做</view>
+  <block wx:if="{{canMake.length > 0}}">
+    <view wx:for="{{canMake}}" wx:key="id" class="card dish">
+      <view class="dish__head">
+        <text class="dish__name">{{item.name}}</text>
+        <view class="dish__tags">
+          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
+        </view>
+      </view>
+      <view class="dish__main">主料齐全：{{item.mainText}}</view>
+      <view class="dish__foot">
+        <button wx:if="{{item.isToday}}" class="mini-btn" size="mini" disabled>已加入</button>
+        <button wx:else class="mini-btn mini-btn--accent" size="mini" data-id="{{item.id}}" bindtap="onAddToday">加入想吃</button>
+      </view>
+    </view>
+  </block>
+  <view wx:else class="hint-line">现有库存还做不了完整的菜，去补点食材吧</view>
+
+  <!-- 差一点点 -->
+  <block wx:if="{{almost.length > 0}}">
+    <view class="section-title">冰箱建议 · 差一点点</view>
+    <view wx:for="{{almost}}" wx:key="id" class="card dish">
+      <view class="dish__head">
+        <text class="dish__name">{{item.name}}</text>
+        <view class="dish__tags">
+          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
+        </view>
+      </view>
+      <view class="dish__missing">还差主料：{{item.missingText}}</view>
+    </view>
+  </block>
+
+  <!-- 购物袋摘要 -->
+  <view class="section-title">购物袋</view>
+  <view class="card bag" bindtap="goShopping">
+    <view class="bag__left">
+      <text class="bag__emoji">🛒</text>
+      <view class="bag__info">
+        <view class="bag__count">{{shoppingCount}} 项待买</view>
+        <view wx:if="{{shoppingCount > 0}}" class="bag__preview">{{shoppingPreview}}{{shoppingCount > 3 ? ' …' : ''}}</view>
+        <view wx:else class="bag__preview">购物袋是空的</view>
+      </view>
+    </view>
+    <text class="bag__arrow">去购物袋 ›</text>
+  </view>
 </view>
