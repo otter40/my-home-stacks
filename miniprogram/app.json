@@ -7,6 +7,7 @@
     "pages/recipes/edit/edit",
     "pages/ingredients/ingredients",
     "pages/ingredients/edit/edit",
+    "pages/suggest/suggest",
     "pages/shopping/shopping",
     "pages/profile/profile"
   ],

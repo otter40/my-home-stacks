@@ -27,38 +27,18 @@
   </block>
   <view wx:else class="hint-line">还没选今天想吃的，看看下面冰箱能做什么 👇</view>
 
-  <!-- 冰箱建议 -->
-  <view class="section-title">冰箱建议 · 可以做</view>
-  <block wx:if="{{canMake.length > 0}}">
-    <view wx:for="{{canMake}}" wx:key="id" class="card dish">
-      <view class="dish__head">
-        <text class="dish__name">{{item.name}}</text>
-        <view class="dish__tags">
-          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
-        </view>
-      </view>
-      <view class="dish__main">主料齐全：{{item.mainText}}</view>
-      <view class="dish__foot">
-        <button wx:if="{{item.isToday}}" class="mini-btn" size="mini" disabled>已加入</button>
-        <button wx:else class="mini-btn mini-btn--accent" size="mini" data-id="{{item.id}}" bindtap="onAddToday">加入想吃</button>
+  <!-- 冰箱建议摘要 -->
+  <view class="section-title">冰箱建议</view>
+  <view class="card bag" bindtap="goSuggest">
+    <view class="bag__left">
+      <text class="bag__emoji">❄️</text>
+      <view class="bag__info">
+        <view class="bag__count">可以做 {{canMakeCount}} 道 · 差一点点 {{almostCount}} 道</view>
+        <view class="bag__preview">看看冰箱现在能做什么</view>
       </view>
     </view>
-  </block>
-  <view wx:else class="hint-line">现有库存还做不了完整的菜，去补点食材吧</view>
-
-  <!-- 差一点点 -->
-  <block wx:if="{{almost.length > 0}}">
-    <view class="section-title">冰箱建议 · 差一点点</view>
-    <view wx:for="{{almost}}" wx:key="id" class="card dish">
-      <view class="dish__head">
-        <text class="dish__name">{{item.name}}</text>
-        <view class="dish__tags">
-          <text wx:for="{{item.types}}" wx:for-item="t" wx:key="*this" class="chip">{{t}}</text>
-        </view>
-      </view>
-      <view class="dish__missing">还差主料：{{item.missingText}}</view>
-    </view>
-  </block>
+    <text class="bag__arrow">去看看 ›</text>
+  </view>
 
   <!-- 购物袋摘要 -->
   <view class="section-title">购物袋</view>

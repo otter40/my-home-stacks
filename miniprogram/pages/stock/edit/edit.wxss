@@ -29,13 +29,15 @@
   border: 1rpx solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-text-secondary);
-  padding: 8rpx 20rpx;
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
   margin: 6rpx 12rpx 6rpx 0;
+  border-radius: 999rpx;
 }
 .status-chip--on {
-  background: rgba(35, 131, 226, 0.12);
-  color: var(--color-accent);
-  border-color: rgba(35, 131, 226, 0.4);
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-color: var(--color-accent);
 }
 
 .save-btn {

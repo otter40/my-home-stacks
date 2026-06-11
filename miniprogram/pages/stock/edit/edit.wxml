@@ -49,13 +49,13 @@
   <view class="field">
     <text class="field__label">状态（可多选）</text>
     <view class="status-wrap">
-      <text
+      <view
         wx:for="{{statusOptions}}"
         wx:key="name"
-        class="chip status-chip {{item.on ? 'status-chip--on' : ''}}"
+        class="status-chip {{item.on ? 'status-chip--on' : ''}}"
         data-status="{{item.name}}"
         bindtap="onToggleStatus"
-      >{{item.name}}</text>
+      >{{item.on ? '✓ ' : ''}}{{item.name}}</view>
     </view>
   </view>
 

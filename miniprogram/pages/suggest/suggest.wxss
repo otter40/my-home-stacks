@@ -1,0 +1,23 @@
+/* pages/suggest/suggest.wxss */
+.page { min-height: 100vh; padding: 8rpx 0 40rpx; }
+
+.dish__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.dish__name { font-size: 32rpx; font-weight: 600; flex: none; margin-right: 16rpx; }
+.dish__tags { flex: 1; text-align: right; }
+.dish__main { margin-top: 12rpx; font-size: 26rpx; color: var(--color-text-secondary); }
+.dish__missing { margin-top: 12rpx; font-size: 26rpx; color: #946A12; }
+.dish__foot { margin-top: 20rpx; display: flex; justify-content: flex-end; }
+
+.mini-btn {
+  margin: 0;
+  font-size: 24rpx;
+  line-height: 2.2;
+  border-radius: 6rpx;
+  background: var(--color-chip-bg);
+  color: var(--color-text-secondary);
+}
+.mini-btn--accent { background: var(--color-accent); color: var(--color-white); }

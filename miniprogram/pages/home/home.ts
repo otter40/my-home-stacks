@@ -10,19 +10,6 @@ interface TodayVM {
   prep: string;
   mainText: string;
 }
-interface CanMakeVM {
-  id: string;
-  name: string;
-  types: string[];
-  isToday: boolean;
-  mainText: string;
-}
-interface AlmostVM {
-  id: string;
-  name: string;
-  types: string[];
-  missingText: string;
-}
 
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
@@ -30,8 +17,8 @@ Page({
   data: {
     dateText: '',
     todayList: [] as TodayVM[],
-    canMake: [] as CanMakeVM[],
-    almost: [] as AlmostVM[],
+    canMakeCount: 0,
+    almostCount: 0,
     shoppingCount: 0,
     shoppingPreview: '' as string,
   },
@@ -52,20 +39,19 @@ Page({
     const stock = getStock();
 
     const todayList: TodayVM[] = [];
-    const canMake: CanMakeVM[] = [];
-    const almost: AlmostVM[] = [];
+    let canMakeCount = 0;
+    let almostCount = 0;
 
     for (const r of recipes) {
-      const mainText = mainNames(r).join('、') || '无主料';
       if (r.isToday) {
-        todayList.push({ id: r.id, name: r.name, types: r.types, prep: r.prep, mainText });
+        todayList.push({
+          id: r.id, name: r.name, types: r.types, prep: r.prep,
+          mainText: mainNames(r).join('、') || '无主料',
+        });
       }
       const res = calcFridgeStatus(r, stock);
-      if (res.status === 'ok') {
-        canMake.push({ id: r.id, name: r.name, types: r.types, isToday: r.isToday, mainText });
-      } else if (res.status === 'almost') {
-        almost.push({ id: r.id, name: r.name, types: r.types, missingText: res.missingMain.join('、') });
-      }
+      if (res.status === 'ok') canMakeCount++;
+      else if (res.status === 'almost') almostCount++;
     }
 
     const autos = getAutoItems(recipes, stock);
@@ -74,8 +60,8 @@ Page({
 
     this.setData({
       todayList,
-      canMake,
-      almost,
+      canMakeCount,
+      almostCount,
       shoppingCount: names.length,
       shoppingPreview: names.slice(0, 3).join('、'),
     });
@@ -90,23 +76,16 @@ Page({
     wx.showToast({ title: '完成啦 🎉，已扣库存', icon: 'none' });
   },
 
-  onAddToday(e: WechatMiniprogram.TouchEvent) {
-    const id = e.currentTarget.dataset.id as string;
-    setToday(id, true);
-    this.refresh();
-    wx.showToast({ title: '已加入今天想吃', icon: 'none' });
-  },
-
   onRemoveToday(e: WechatMiniprogram.TouchEvent) {
     const id = e.currentTarget.dataset.id as string;
     setToday(id, false);
     this.refresh();
   },
 
+  goSuggest() {
+    wx.navigateTo({ url: '/pages/suggest/suggest' });
+  },
   goShopping() {
     wx.navigateTo({ url: '/pages/shopping/shopping' });
-  },
-  goRecipes() {
-    wx.switchTab({ url: '/pages/recipes/recipes' });
   },
 });
